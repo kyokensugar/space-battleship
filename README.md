@@ -2,6 +2,8 @@
 
 宇宙を舞台にした古典ルールの Battleship ゲーム。プレイヤー vs AI。
 
+**遊ぶ:** https://kyokensugar.github.io/space-battleship/
+
 ## 開発の進め方
 
 要件定義 → 設計 → 実装 → テスト → デバッグ → デプロイ → 振り返り のライフサイクルに沿って、
@@ -35,6 +37,10 @@ src/
 | `npm run typecheck` | 型チェック |
 | `npm run lint` | 文法チェック |
 | `npm run build` | 公開用ファイルを `dist/` に生成 |
+
+## 公開(デプロイ)
+
+`main` に取り込まれると GitHub Actions(`.github/workflows/deploy.yml`)がビルドし、GitHub Pages に自動公開します。
 
 ## ドキュメント
 
