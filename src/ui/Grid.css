@@ -1,0 +1,81 @@
+.grid {
+  --cell: 34px;
+  display: grid;
+  grid-template-columns: var(--cell) repeat(10, var(--cell));
+  gap: 2px;
+  padding: 8px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  width: max-content;
+}
+
+.grid-row {
+  display: contents;
+}
+
+.grid-corner,
+.grid-header {
+  width: var(--cell);
+  height: var(--cell);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.cell {
+  width: var(--cell);
+  height: var(--cell);
+  padding: 0;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  background: #0b1120;
+}
+
+.cell:disabled {
+  opacity: 1;
+  cursor: default;
+}
+
+.cell:not(:disabled):hover {
+  border-color: var(--accent);
+}
+
+.cell-ship {
+  background: var(--ship);
+}
+
+.cell-preview-ok {
+  background: var(--preview-ok);
+}
+
+.cell-preview-bad {
+  background: var(--preview-bad);
+}
+
+.cell-miss {
+  background: var(--miss);
+}
+
+.cell-miss::after {
+  content: '·';
+  color: var(--muted);
+  font-size: 1.4rem;
+  line-height: 1;
+}
+
+.cell-hit {
+  background: var(--hit);
+}
+
+.cell-sunk {
+  background: var(--sunk);
+}
+
+@media (max-width: 640px) {
+  .grid {
+    --cell: 28px;
+  }
+}
