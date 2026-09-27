@@ -24,8 +24,9 @@ export function PlacementScreen({ onComplete }: Props) {
 
   const cellState = (coord: Coord): CellState => {
     const key = coordKey(coord)
+    if (previewKeys.has(key) && previewError) return 'preview-bad'
     if (shipKeys.has(key)) return 'ship'
-    if (previewKeys.has(key)) return previewError ? 'preview-bad' : 'preview-ok'
+    if (previewKeys.has(key)) return 'preview-ok'
     return 'empty'
   }
 

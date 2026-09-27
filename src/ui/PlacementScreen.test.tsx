@@ -20,6 +20,16 @@ describe('PlacementScreen', () => {
     expect(screen.getByText(/旗艦を置く位置をクリック/)).toBeInTheDocument()
   })
 
+  it('shows a red preview even when the whole ship overlaps an existing one', () => {
+    render(<PlacementScreen onComplete={() => {}} />)
+    fireEvent.click(cell('A1'))
+    fireEvent.mouseEnter(cell('A1'))
+    for (const label of ['A1', 'B1', 'C1', 'D1']) {
+      expect(cell(label)).toHaveAccessibleName(/preview-bad$/)
+    }
+    expect(cell('E1')).toHaveAccessibleName(/ship$/)
+  })
+
   it('rotates orientation', () => {
     render(<PlacementScreen onComplete={() => {}} />)
     fireEvent.click(screen.getByRole('button', { name: '向きを変える' }))
