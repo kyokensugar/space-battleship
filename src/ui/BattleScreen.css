@@ -9,14 +9,22 @@
   margin: 0;
   font-size: 1.1rem;
   color: var(--text-h);
+  padding: 8px 14px;
+  border-left: 3px solid var(--accent);
+  background: var(--panel);
+  border-radius: 0 8px 8px 0;
 }
 
 .status.win {
   color: #7ee08a;
+  border-left-color: #7ee08a;
+  text-shadow: 0 0 12px rgba(126, 224, 138, 0.6);
 }
 
 .status.lose {
   color: #ff7b7b;
+  border-left-color: #ff7b7b;
+  text-shadow: 0 0 12px rgba(255, 123, 123, 0.6);
 }
 
 .battle-body {
@@ -48,9 +56,18 @@
   gap: 6px 12px;
 }
 
+.fleet-status li {
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  font-size: 0.9rem;
+}
+
 .fleet-status li.sunk {
   text-decoration: line-through;
   color: var(--muted);
+  border-color: rgba(220, 38, 38, 0.5);
+  background: rgba(220, 38, 38, 0.12);
 }
 
 .battle-log {
