@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { coordKey, isFleetComplete, placeShip, randomFleet, shipCells, validatePlacement } from '../game/board'
 import { FLEET_KINDS, SHIP_LENGTHS, type Coord, type Fleet, type Orientation, type ShipKind } from '../game/types'
 import { Grid, type CellState } from './Grid'
-import { SHIP_NAMES } from './shipNames'
+import { useI18n } from '../i18n/context'
 import './PlacementScreen.css'
 
 type Props = {
@@ -10,6 +10,7 @@ type Props = {
 }
 
 export function PlacementScreen({ onComplete }: Props) {
+  const { t } = useI18n()
   const [fleet, setFleet] = useState<Fleet>([])
   const [orientation, setOrientation] = useState<Orientation>('horizontal')
   const [hover, setHover] = useState<Coord | null>(null)
@@ -40,9 +41,9 @@ export function PlacementScreen({ onComplete }: Props) {
 
   return (
     <section className="placement">
-      <h2>艦隊を配置</h2>
+      <h2>{t.placement.heading}</h2>
       <div className="placement-body">
-        <Grid label="自分の宙域" cellState={cellState} onCellClick={handleClick} onCellHover={setHover} />
+        <Grid label={t.placement.ownSector} cellState={cellState} onCellClick={handleClick} onCellHover={setHover} />
         <aside className="placement-panel">
           <ul className="ship-list">
             {FLEET_KINDS.map((kind) => {
@@ -50,28 +51,28 @@ export function PlacementScreen({ onComplete }: Props) {
               const current = kind === nextKind
               return (
                 <li key={kind} className={current ? 'current' : placed ? 'placed' : ''}>
-                  {SHIP_NAMES[kind]}({SHIP_LENGTHS[kind]}マス){placed ? ' ✓' : current ? ' ←' : ''}
+                  {t.shipNames[kind]}({t.placement.cells(SHIP_LENGTHS[kind])}){placed ? ' ✓' : current ? ' ←' : ''}
                 </li>
               )
             })}
           </ul>
           <p className="hint">
             {nextKind
-              ? `${SHIP_NAMES[nextKind]}を置く位置をクリック(向き: ${orientation === 'horizontal' ? '横' : '縦'})`
-              : '配置完了!'}
+              ? t.placement.hint(t.shipNames[nextKind], t.orientation[orientation])
+              : t.placement.done}
           </p>
           <div className="placement-actions">
             <button type="button" onClick={() => setOrientation((o) => (o === 'horizontal' ? 'vertical' : 'horizontal'))}>
-              向きを変える
+              {t.placement.rotate}
             </button>
             <button type="button" onClick={() => setFleet(randomFleet())}>
-              ランダム配置
+              {t.placement.random}
             </button>
             <button type="button" onClick={() => setFleet([])} disabled={fleet.length === 0}>
-              やり直す
+              {t.placement.reset}
             </button>
             <button type="button" className="primary" disabled={!complete} onClick={() => onComplete(fleet)}>
-              出撃
+              {t.placement.sortie}
             </button>
           </div>
         </aside>

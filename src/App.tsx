@@ -5,7 +5,8 @@ import type { Player } from './game/rules'
 import type { Fleet } from './game/types'
 import { BattleScreen } from './ui/BattleScreen'
 import { PlacementScreen } from './ui/PlacementScreen'
-import { DIFFICULTY_NAMES } from './ui/shipNames'
+import { useI18n } from './i18n/context'
+import { LanguageSwitch } from './i18n/LanguageSwitch'
 import './App.css'
 
 type Screen =
@@ -17,15 +18,19 @@ type Screen =
 function App() {
   const [screen, setScreen] = useState<Screen>({ name: 'start' })
   const [difficulty, setDifficulty] = useState<Difficulty>('easy')
+  const { t } = useI18n()
 
   return (
     <main>
-      <h1>Space Battleship</h1>
+      <header className="app-header">
+        <h1>{t.title}</h1>
+        <LanguageSwitch />
+      </header>
       {screen.name === 'start' && (
         <section className="start">
-          <p>AI 艦隊との一騎打ち。相手の艦をすべて撃沈せよ。</p>
+          <p>{t.intro}</p>
           <fieldset className="difficulty">
-            <legend>難易度</legend>
+            <legend>{t.difficulty}</legend>
             {DIFFICULTIES.map((d) => (
               <label key={d}>
                 <input
@@ -35,12 +40,12 @@ function App() {
                   checked={difficulty === d}
                   onChange={() => setDifficulty(d)}
                 />
-                {DIFFICULTY_NAMES[d]}
+                {t.difficultyNames[d]}
               </label>
             ))}
           </fieldset>
           <button type="button" className="primary" onClick={() => setScreen({ name: 'setup' })}>
-            ゲーム開始
+            {t.start}
           </button>
         </section>
       )}
@@ -59,10 +64,10 @@ function App() {
       )}
       {screen.name === 'result' && (
         <section className="start">
-          <h2>{screen.winner === 'player' ? '勝利!' : '敗北…'}</h2>
-          <p>{screen.winner === 'player' ? '敵艦隊を全滅させた。' : '自艦隊が全滅した。次は勝とう。'}</p>
+          <h2>{screen.winner === 'player' ? t.result.win : t.result.lose}</h2>
+          <p>{screen.winner === 'player' ? t.result.winDetail : t.result.loseDetail}</p>
           <button type="button" className="primary" onClick={() => setScreen({ name: 'setup' })}>
-            もう一度
+            {t.result.again}
           </button>
         </section>
       )}
