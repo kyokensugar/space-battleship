@@ -12,4 +12,5 @@ export const SHIP_NAMES: Record<ShipKind, string> = {
 export const DIFFICULTY_NAMES: Record<Difficulty, string> = {
   easy: 'Easy(ランダム砲撃)',
   normal: 'Normal(ヒット周辺を追撃)',
+  hard: 'Hard(確率で狙う)',
 }
