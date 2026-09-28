@@ -115,7 +115,7 @@
   }
 }
 
-/* Sunk banner slides across the top */
+/* Sunk banner fades in place (no motion, so it does not fight the screen shake) */
 .sunk-banner {
   position: fixed;
   top: 18%;
@@ -150,21 +150,15 @@
 @keyframes banner {
   0% {
     opacity: 0;
-    transform: translateX(-50%) scale(0.6);
   }
-  15% {
+  10% {
     opacity: 1;
-    transform: translateX(-50%) scale(1.05);
-  }
-  25% {
-    transform: translateX(-50%) scale(1);
   }
   80% {
     opacity: 1;
   }
   100% {
     opacity: 0;
-    transform: translateX(-50%) translateY(-20px);
   }
 }
 
