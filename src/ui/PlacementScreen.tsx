@@ -3,6 +3,7 @@ import { coordKey, isFleetComplete, placeShip, randomFleet, shipCells, validateP
 import { FLEET_KINDS, SHIP_LENGTHS, type Coord, type Fleet, type Orientation, type ShipKind } from '../game/types'
 import { Grid, type CellState } from './Grid'
 import { useI18n } from '../i18n/context'
+import { Captain } from './Captain'
 import './PlacementScreen.css'
 
 type Props = {
@@ -42,6 +43,11 @@ export function PlacementScreen({ onComplete }: Props) {
   return (
     <section className="placement">
       <h2>{t.placement.heading}</h2>
+      <Captain
+        mood={complete ? 'happy' : 'normal'}
+        line={complete ? t.captain.deployReady : t.captain.deploy}
+        lineKey={complete ? 'ready' : 'deploy'}
+      />
       <div className="placement-body">
         <Grid label={t.placement.ownSector} cellState={cellState} onCellClick={handleClick} onCellHover={setHover} />
         <aside className="placement-panel">

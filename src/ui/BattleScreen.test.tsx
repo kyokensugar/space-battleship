@@ -36,6 +36,23 @@ describe('BattleScreen', () => {
     expect(screen.getByText(/あなたが A1 を砲撃 → ヒット!/)).toBeInTheDocument()
   })
 
+  it('captain reacts to hits, misses and sunk ships with a matching face', async () => {
+    render(<BattleScreen playerFleet={rowFleet} aiFleet={rowFleet} difficulty="easy" onFinish={() => {}} aiDelayMs={0} />)
+    const captain = () => screen.getByTestId('captain')
+    expect(captain()).toHaveClass('normal')
+    expect(captain()).toHaveTextContent('エイリアン宙域を狙え')
+
+    fireEvent.click(enemyCell('A5'))
+    expect(captain()).toHaveClass('happy')
+    expect(captain()).toHaveTextContent('いいぞ! その調子だ!')
+    await aiTurn()
+    expect(captain()).not.toHaveTextContent('いいぞ')
+
+    fireEvent.click(enemyCell('B5'))
+    expect(captain()).toHaveClass('happy')
+    expect(captain()).toHaveTextContent('相手の斥候虫を沈めたぞ!')
+  })
+
   it('ignores clicks on already-shot cells and during the AI turn', async () => {
     render(<BattleScreen playerFleet={rowFleet} aiFleet={rowFleet} difficulty="easy" onFinish={() => {}} aiDelayMs={0} />)
     fireEvent.click(enemyCell('A10'))

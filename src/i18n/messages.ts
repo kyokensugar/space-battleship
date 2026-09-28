@@ -49,6 +49,21 @@ export type Messages = {
     toResult: string
   }
   sound: { mute: string; unmute: string }
+  captain: {
+    name: string
+    deploy: string
+    deployReady: string
+    aim: string
+    waiting: string
+    playerHit: string
+    playerMiss: string
+    playerSunk: (ship: string) => string
+    enemyHit: string
+    enemyMiss: string
+    enemySunk: (ship: string) => string
+    win: string
+    lose: string
+  }
   result: {
     win: string
     lose: string
@@ -106,6 +121,21 @@ const ja: Messages = {
     toResult: '結果へ',
   },
   sound: { mute: '音を消す', unmute: '音を出す' },
+  captain: {
+    name: '艦長',
+    deploy: '人類艦隊の配置を決定せよ!',
+    deployReady: '全艦、配置完了。いざ出撃!!',
+    aim: 'エイリアン宙域を狙え。座標を選べ!',
+    waiting: '敵の砲撃が来る… 全艦、衝撃に備えよ!',
+    playerHit: 'いいぞ! その調子だ!',
+    playerMiss: '外れたか… 落ち着いて次を狙え。',
+    playerSunk: (ship) => `相手の${ship}を沈めたぞ!`,
+    enemyHit: '被弾! 持ちこたえろ!',
+    enemyMiss: '敵の砲撃は外れた。反撃だ!',
+    enemySunk: (ship) => `こちらの${ship}がやられてしまった…`,
+    win: '勝ったぞ! 太陽系は守られた!',
+    lose: '……全滅か。だが、人類はまだ終わらん。',
+  },
   result: {
     win: '勝利!',
     lose: '敗北…',
@@ -163,6 +193,21 @@ const en: Messages = {
     toResult: 'Results',
   },
   sound: { mute: 'Mute sound', unmute: 'Unmute sound' },
+  captain: {
+    name: 'Captain',
+    deploy: 'Commander, position the human fleet!',
+    deployReady: 'All ships in position. Sortie!!',
+    aim: 'Target the alien sector. Pick your coordinates!',
+    waiting: 'Incoming fire… all hands, brace for impact!',
+    playerHit: 'Good shot! Keep it up!',
+    playerMiss: 'A miss… steady now, aim again.',
+    playerSunk: (ship) => `We took down their ${ship}!`,
+    enemyHit: "We're hit! Hold together!",
+    enemyMiss: 'Their shot went wide. Return fire!',
+    enemySunk: (ship) => `We lost our ${ship}…`,
+    win: 'We did it! The solar system is safe!',
+    lose: '…Fleet lost. But humanity is not finished yet.',
+  },
   result: {
     win: 'Victory!',
     lose: 'Defeat…',
