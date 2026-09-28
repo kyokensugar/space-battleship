@@ -10,10 +10,13 @@ export type Messages = {
   languageName: string
   title: string
   intro: string
+  story: string
   difficulty: string
   difficultyNames: Record<Difficulty, string>
+  difficultyDescriptions: Record<Difficulty, string>
   start: string
   shipNames: Record<ShipKind, string>
+  alienShipNames: Record<ShipKind, string>
   who: Record<Player, string>
   orientation: Record<Orientation, string>
   placement: {
@@ -58,16 +61,20 @@ export type Messages = {
 const ja: Messages = {
   languageName: '日本語',
   title: 'Space Battleship',
-  intro: 'AI 艦隊との一騎打ち。相手の艦をすべて撃沈せよ。',
+  intro: '人類艦隊 vs エイリアン艦隊。暗黒の宙域に潜む敵をすべて撃沈せよ。',
+  story:
+    '西暦 2417 年。太陽系の外縁に、未知のエイリアン艦隊が姿を現した。互いの位置は分からない。頼れるのは砲撃の手応えだけ。人類最後の艦隊の指揮官として、宙域を制圧せよ。',
   difficulty: '難易度',
-  difficultyNames: {
-    easy: 'Easy(ランダム砲撃)',
-    normal: 'Normal(ヒット周辺を追撃)',
-    hard: 'Hard(確率で狙う)',
+  difficultyNames: { easy: 'Easy', normal: 'Normal', hard: 'Hard' },
+  difficultyDescriptions: {
+    easy: 'エイリアンは手当たり次第に撃ってくる',
+    normal: '一度当てると周囲を執拗に追撃してくる',
+    hard: '艦の位置を確率で読み、最も怪しい場所を撃つ',
   },
-  start: 'ゲーム開始',
+  start: '出撃準備へ',
   shipNames: { flagship: '旗艦', battleship: '戦艦', cruiser: '巡洋艦', destroyer: '駆逐艦', scout: '偵察艇' },
-  who: { player: 'あなた', ai: 'AI' },
+  alienShipNames: { flagship: '母船', battleship: '巨獣船', cruiser: '襲撃船', destroyer: '寄生艇', scout: '斥候虫' },
+  who: { player: 'あなた', ai: 'エイリアン' },
   orientation: { horizontal: '横', vertical: '縦' },
   placement: {
     heading: '艦隊を配置',
@@ -82,19 +89,19 @@ const ja: Messages = {
   },
   battle: {
     heading: '戦闘',
-    enemySector: '敵の宙域',
-    enemyFleet: '敵の残艦',
-    ownFleet: '自分の残艦',
-    yourTurn: 'あなたの番: 敵宙域をクリックして砲撃',
-    aiTurn: 'AI の番…',
-    win: '勝利! 敵艦隊を全滅させた',
+    enemySector: 'エイリアン宙域',
+    enemyFleet: 'エイリアン艦隊',
+    ownFleet: '人類艦隊',
+    yourTurn: 'あなたの番: エイリアン宙域をクリックして砲撃',
+    aiTurn: 'エイリアンの番…',
+    win: '勝利! エイリアン艦隊を全滅させた',
     lose: '敗北… 自艦隊が全滅した',
     log: (turn) => `戦況ログ(第 ${turn} 手)`,
     shot: (who, coord) => `${who}が ${coord} を砲撃 → `,
     miss: 'ミス',
     hit: 'ヒット!',
     sunk: (ship) => `${ship}を撃沈!!`,
-    sunkEnemy: (ship) => `敵の${ship}を撃沈!`,
+    sunkEnemy: (ship) => `エイリアンの${ship}を撃沈!`,
     sunkOwn: (ship) => `${ship}が撃沈された…`,
     toResult: '結果へ',
   },
@@ -102,8 +109,8 @@ const ja: Messages = {
   result: {
     win: '勝利!',
     lose: '敗北…',
-    winDetail: '敵艦隊を全滅させた。',
-    loseDetail: '自艦隊が全滅した。次は勝とう。',
+    winDetail: 'エイリアン艦隊を全滅させた。太陽系は守られた。',
+    loseDetail: '人類艦隊は全滅した。次は勝とう。',
     again: 'もう一度',
   },
 }
@@ -111,16 +118,20 @@ const ja: Messages = {
 const en: Messages = {
   languageName: 'English',
   title: 'Space Battleship',
-  intro: 'A duel against the AI fleet. Sink every enemy ship.',
+  intro: 'Human fleet vs alien fleet. Sink every enemy lurking in the dark.',
+  story:
+    'Year 2417. An unknown alien armada has appeared at the edge of the solar system. Neither side can see the other; only the feedback of each shot tells you where they hide. As commander of the last human fleet, take control of the sector.',
   difficulty: 'Difficulty',
-  difficultyNames: {
-    easy: 'Easy (random fire)',
-    normal: 'Normal (hunts around hits)',
-    hard: 'Hard (probability targeting)',
+  difficultyNames: { easy: 'Easy', normal: 'Normal', hard: 'Hard' },
+  difficultyDescriptions: {
+    easy: 'The aliens fire at random',
+    normal: 'After a hit they hunt the surrounding cells',
+    hard: 'They read ship probabilities and fire at the likeliest cell',
   },
-  start: 'Start game',
+  start: 'Prepare for sortie',
   shipNames: { flagship: 'Flagship', battleship: 'Battleship', cruiser: 'Cruiser', destroyer: 'Destroyer', scout: 'Scout' },
-  who: { player: 'You', ai: 'AI' },
+  alienShipNames: { flagship: 'Mothership', battleship: 'Leviathan', cruiser: 'Raider', destroyer: 'Parasite', scout: 'Drone' },
+  who: { player: 'You', ai: 'Aliens' },
   orientation: { horizontal: 'horizontal', vertical: 'vertical' },
   placement: {
     heading: 'Deploy your fleet',
@@ -135,19 +146,19 @@ const en: Messages = {
   },
   battle: {
     heading: 'Battle',
-    enemySector: 'Enemy sector',
-    enemyFleet: 'Enemy fleet',
-    ownFleet: 'Your fleet',
-    yourTurn: 'Your turn: click the enemy sector to fire',
-    aiTurn: "AI's turn…",
-    win: 'Victory! Enemy fleet destroyed',
+    enemySector: 'Alien sector',
+    enemyFleet: 'Alien fleet',
+    ownFleet: 'Human fleet',
+    yourTurn: 'Your turn: click the alien sector to fire',
+    aiTurn: "Aliens' turn…",
+    win: 'Victory! Alien fleet destroyed',
     lose: 'Defeat… Your fleet was destroyed',
     log: (turn) => `Battle log (shot ${turn})`,
     shot: (who, coord) => `${who} fired at ${coord} → `,
     miss: 'Miss',
     hit: 'Hit!',
     sunk: (ship) => `${ship} sunk!!`,
-    sunkEnemy: (ship) => `Enemy ${ship} sunk!`,
+    sunkEnemy: (ship) => `Alien ${ship} sunk!`,
     sunkOwn: (ship) => `Your ${ship} was sunk…`,
     toResult: 'Results',
   },
@@ -155,8 +166,8 @@ const en: Messages = {
   result: {
     win: 'Victory!',
     lose: 'Defeat…',
-    winDetail: 'You destroyed the enemy fleet.',
-    loseDetail: 'Your fleet was destroyed. Win the next one.',
+    winDetail: 'You destroyed the alien fleet. The solar system is safe.',
+    loseDetail: 'The human fleet was destroyed. Win the next one.',
     again: 'Play again',
   },
 }

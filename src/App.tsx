@@ -1,10 +1,11 @@
 import { useState } from 'react'
-import { DIFFICULTIES, type Difficulty } from './game/ai/index'
+import type { Difficulty } from './game/ai/index'
 import { randomFleet } from './game/board'
 import type { Player } from './game/rules'
 import type { Fleet } from './game/types'
 import { BattleScreen } from './ui/BattleScreen'
 import { PlacementScreen } from './ui/PlacementScreen'
+import { StartScreen } from './ui/StartScreen'
 import { Starfield } from './ui/Starfield'
 import { useI18n } from './i18n/context'
 import { LanguageSwitch } from './i18n/LanguageSwitch'
@@ -35,27 +36,7 @@ function App() {
         </div>
       </header>
       {screen.name === 'start' && (
-        <section className="start">
-          <p>{t.intro}</p>
-          <fieldset className="difficulty">
-            <legend>{t.difficulty}</legend>
-            {DIFFICULTIES.map((d) => (
-              <label key={d}>
-                <input
-                  type="radio"
-                  name="difficulty"
-                  value={d}
-                  checked={difficulty === d}
-                  onChange={() => setDifficulty(d)}
-                />
-                {t.difficultyNames[d]}
-              </label>
-            ))}
-          </fieldset>
-          <button type="button" className="primary" onClick={() => setScreen({ name: 'setup' })}>
-            {t.start}
-          </button>
-        </section>
+        <StartScreen difficulty={difficulty} onDifficultyChange={setDifficulty} onStart={() => setScreen({ name: 'setup' })} />
       )}
       {screen.name === 'setup' && (
         <PlacementScreen

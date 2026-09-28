@@ -1,0 +1,88 @@
+.hero-scene {
+  width: 100%;
+  max-width: 900px;
+  height: auto;
+  display: block;
+  filter: drop-shadow(0 0 24px rgba(56, 189, 248, 0.15));
+}
+
+.hero-scene .fleet.human {
+  animation: hover-h 6s ease-in-out infinite alternate;
+}
+
+.hero-scene .fleet.alien {
+  animation: hover-a 7s ease-in-out infinite alternate;
+}
+
+@keyframes hover-h {
+  from {
+    transform: translateY(-6px);
+  }
+  to {
+    transform: translateY(6px);
+  }
+}
+
+@keyframes hover-a {
+  from {
+    transform: translateY(5px);
+  }
+  to {
+    transform: translateY(-7px);
+  }
+}
+
+.hero-scene .thruster {
+  animation: thrust 0.4s ease-in-out infinite alternate;
+  transform-origin: right center;
+  transform-box: fill-box;
+}
+
+@keyframes thrust {
+  from {
+    opacity: 0.6;
+    transform: scaleX(0.7);
+  }
+  to {
+    opacity: 1;
+    transform: scaleX(1.4);
+  }
+}
+
+.hero-scene .eye {
+  animation: blink 3s ease-in-out infinite;
+}
+
+@keyframes blink {
+  0%,
+  90%,
+  100% {
+    opacity: 1;
+  }
+  95% {
+    opacity: 0.2;
+  }
+}
+
+.hero-scene .beam {
+  stroke-dasharray: 40 400;
+  animation: beam 2.4s linear infinite;
+}
+
+.hero-scene .alien-beam {
+  animation-delay: 1.2s;
+}
+
+@keyframes beam {
+  from {
+    stroke-dashoffset: 440;
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+    opacity: 0;
+  }
+}

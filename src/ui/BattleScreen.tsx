@@ -49,12 +49,17 @@ function ResultOverlay({ winner, onContinue }: { winner: Player; onContinue: () 
 
 type LogEntry = { who: Player; target: Coord; outcome: ShotOutcome; sunkShip?: ShipKind }
 
+/** Ships owned by the AI are aliens; `owner` is the side the ship belongs to. */
+function shipName(t: Messages, owner: Player, kind: ShipKind) {
+  return owner === 'ai' ? t.alienShipNames[kind] : t.shipNames[kind]
+}
+
 /** Log entries are stored as data and rendered in the current language. */
 function describeShot(t: Messages, { who, target, outcome, sunkShip }: LogEntry) {
   const base = t.battle.shot(t.who[who], coordLabel(target))
   if (outcome === 'miss') return base + t.battle.miss
   if (outcome === 'hit') return base + t.battle.hit
-  return base + t.battle.sunk(sunkShip ? t.shipNames[sunkShip] : '?')
+  return base + t.battle.sunk(sunkShip ? shipName(t, who === 'player' ? 'ai' : 'player', sunkShip) : '?')
 }
 
 /** Cell state for a board as seen by the viewer. `revealShips` shows intact ship cells (own board). */
@@ -75,15 +80,15 @@ function sideCellState(side: Side, revealShips: boolean) {
   }
 }
 
-function FleetStatus({ side, title }: { side: Side; title: string }) {
+function FleetStatus({ side, owner, title }: { side: Side; owner: Player; title: string }) {
   const { t } = useI18n()
   return (
-    <div className="fleet-status">
+    <div className={`fleet-status ${owner}`}>
       <h3>{title}</h3>
       <ul>
         {side.fleet.map((ship) => (
           <li key={ship.kind} className={isShipSunk(side, ship) ? 'sunk' : ''}>
-            {t.shipNames[ship.kind]}
+            {shipName(t, owner, ship.kind)}
           </li>
         ))}
       </ul>
@@ -157,25 +162,27 @@ export function BattleScreen({ playerFleet, aiFleet, difficulty, onFinish, aiDel
       <h2>{t.battle.heading}</h2>
       {banner && (
         <div key={banner.id} className={`sunk-banner ${banner.who === 'player' ? 'enemy-down' : 'own-down'}`} role="alert">
-          {banner.who === 'player' ? t.battle.sunkEnemy(t.shipNames[banner.ship]) : t.battle.sunkOwn(t.shipNames[banner.ship])}
+          {banner.who === 'player'
+            ? t.battle.sunkEnemy(shipName(t, 'ai', banner.ship))
+            : t.battle.sunkOwn(shipName(t, 'player', banner.ship))}
         </div>
       )}
       <p className={`status ${finished ? (state.winner === 'player' ? 'win' : 'lose') : ''}`} role="status">
         {status}
       </p>
       <div className="battle-body">
-        <div className="board-block">
+        <div className="board-block alien">
           <Grid
             label={t.battle.enemySector}
             cellState={sideCellState(state.ai, false)}
             onCellClick={handleEnemyClick}
             disabled={!playersTurn}
           />
-          <FleetStatus side={state.ai} title={t.battle.enemyFleet} />
+          <FleetStatus side={state.ai} owner="ai" title={t.battle.enemyFleet} />
         </div>
         <div className="board-block">
           <Grid label={t.placement.ownSector} cellState={sideCellState(state.player, true)} disabled />
-          <FleetStatus side={state.player} title={t.battle.ownFleet} />
+          <FleetStatus side={state.player} owner="player" title={t.battle.ownFleet} />
         </div>
         <aside className="battle-log">
           <h3>{t.battle.log(state.turnCount)}</h3>

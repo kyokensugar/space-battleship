@@ -23,20 +23,20 @@ describe('i18n', () => {
 
   it('switches the whole UI to English and remembers the choice', () => {
     renderApp('ja')
-    expect(screen.getByRole('button', { name: 'ゲーム開始' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: '出撃準備へ' })).toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: 'English' }))
-    expect(screen.getByRole('button', { name: 'Start game' })).toBeInTheDocument()
-    expect(screen.getByRole('radio', { name: 'Hard (probability targeting)' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Prepare for sortie' })).toBeInTheDocument()
+    expect(screen.getByRole('radio', { name: 'Hard' })).toBeInTheDocument()
     expect(detectLanguage()).toBe('en')
   })
 
   it('renders placement and battle screens in English', () => {
     renderApp('en')
-    fireEvent.click(screen.getByRole('button', { name: 'Start game' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Prepare for sortie' }))
     expect(screen.getByRole('heading', { name: 'Deploy your fleet' })).toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: 'Random layout' }))
     fireEvent.click(screen.getByRole('button', { name: 'Sortie' }))
-    expect(screen.getByRole('grid', { name: 'Enemy sector' })).toBeInTheDocument()
+    expect(screen.getByRole('grid', { name: 'Alien sector' })).toBeInTheDocument()
     expect(screen.getByRole('status')).toHaveTextContent('Your turn')
   })
 

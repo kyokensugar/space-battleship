@@ -1,0 +1,103 @@
+.start {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  text-align: center;
+}
+
+.difficulty {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 8px 14px 14px;
+}
+
+.difficulty legend {
+  color: var(--muted);
+  padding: 0 6px;
+}
+
+.start-copy {
+  max-width: 640px;
+}
+
+.start-tagline {
+  font-size: 1.25rem;
+  color: var(--text-h);
+  margin: 0 0 8px;
+}
+
+.start-story {
+  margin: 0;
+  color: var(--text);
+  opacity: 0.85;
+}
+
+.difficulty {
+  width: 100%;
+  max-width: 760px;
+}
+
+.difficulty-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
+
+.difficulty-card {
+  flex: 1 1 200px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: rgba(8, 14, 34, 0.6);
+  cursor: pointer;
+  text-align: left;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
+}
+
+.difficulty-card:hover {
+  border-color: var(--accent);
+}
+
+.difficulty-card.selected {
+  border-color: var(--accent);
+  box-shadow: 0 0 14px var(--accent-glow);
+}
+
+.difficulty-card input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.difficulty-name {
+  color: var(--text-h);
+  font-weight: 600;
+}
+
+.difficulty-desc {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.start-button {
+  font-size: 1.2rem;
+  padding: 12px 40px;
+  letter-spacing: 0.1em;
+  animation: beacon 2s ease-in-out infinite alternate;
+}
+
+@keyframes beacon {
+  from {
+    box-shadow: 0 0 12px var(--accent-glow);
+  }
+  to {
+    box-shadow: 0 0 30px var(--accent-glow);
+  }
+}
