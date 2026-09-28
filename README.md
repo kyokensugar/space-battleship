@@ -51,3 +51,11 @@ PR を開くと `.github/workflows/preview.yml` が `https://kyokensugar.github.
 
 - `docs/requirements.md` — 要件定義書
 - `docs/design.md` — 設計書
+
+## 音楽・効果音
+
+- BGM(`public/music/`)は Takahide Sato によるオリジナル楽曲です。
+  - `opening.mp3`: "Beyond the Event Horizon"(オープニング/配置/結果画面)
+  - `battle.mp3`: "Battle Ostinato"(戦闘画面)
+- 効果音はファイルを使わず、Web Audio API でコード合成しています(`src/audio/sounds.ts`)。
+- 右上の 🔊 ボタンで BGM・効果音をまとめてミュートできます(設定は保存されます)。
