@@ -1,0 +1,56 @@
+name: PR Preview
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: gh-pages
+  cancel-in-progress: false
+
+jobs:
+  preview:
+    if: github.event.action != 'closed'
+    runs-on: ubuntu-latest
+    env:
+      PREVIEW_URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/pr-${{ github.event.number }}/
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+        env:
+          BASE_PATH: /${{ github.event.repository.name }}/pr-${{ github.event.number }}/
+      - uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: dist
+          destination_dir: pr-${{ github.event.number }}
+          keep_files: true
+      - uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: preview
+          message: |
+            **お試し URL(この PR の内容で遊べます):** ${{ env.PREVIEW_URL }}
+            反映まで 1〜2 分かかります。PR を更新するたびに自動で更新され、マージ/クローズで消えます。
+
+  cleanup:
+    if: github.event.action == 'closed'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+      - run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git rm -r --ignore-unmatch --quiet pr-${{ github.event.number }}
+          git diff --cached --quiet || git commit -m "Remove preview for PR #${{ github.event.number }}"
+          git push
