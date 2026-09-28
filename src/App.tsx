@@ -5,6 +5,7 @@ import type { Player } from './game/rules'
 import type { Fleet } from './game/types'
 import { BattleScreen } from './ui/BattleScreen'
 import { PlacementScreen } from './ui/PlacementScreen'
+import { Starfield } from './ui/Starfield'
 import { useI18n } from './i18n/context'
 import { LanguageSwitch } from './i18n/LanguageSwitch'
 import './App.css'
@@ -22,6 +23,7 @@ function App() {
 
   return (
     <main>
+      <Starfield />
       <header className="app-header">
         <h1>{t.title}</h1>
         <LanguageSwitch />
