@@ -9,7 +9,7 @@ const rowFleet: Fleet = FLEET_KINDS.reduce<Fleet>(
   [],
 )
 
-const enemyCell = (label: string) => screen.getByRole('gridcell', { name: new RegExp(`敵の宙域 ${label} `) })
+const enemyCell = (label: string) => screen.getByRole('gridcell', { name: new RegExp(`エイリアン宙域 ${label} `) })
 
 const aiTurn = async () => {
   await act(async () => {
@@ -27,7 +27,7 @@ describe('BattleScreen', () => {
 
     fireEvent.click(enemyCell('A10'))
     expect(enemyCell('A10')).toHaveAccessibleName(/miss$/)
-    expect(screen.getByRole('status')).toHaveTextContent('AI の番')
+    expect(screen.getByRole('status')).toHaveTextContent('エイリアンの番')
     await aiTurn()
     expect(screen.getByRole('status')).toHaveTextContent('あなたの番')
 
@@ -53,9 +53,9 @@ describe('BattleScreen', () => {
     fireEvent.click(enemyCell('A5'))
     await aiTurn()
     fireEvent.click(enemyCell('B5'))
-    expect(screen.getByText(/偵察艇を撃沈!!/)).toBeInTheDocument()
+    expect(screen.getByText(/斥候虫を撃沈!!/)).toBeInTheDocument()
     expect(enemyCell('A5')).toHaveAccessibleName(/sunk$/)
-    expect(screen.getByRole('alert')).toHaveTextContent('敵の偵察艇を撃沈!')
+    expect(screen.getByRole('alert')).toHaveTextContent('エイリアンの斥候虫を撃沈!')
     await act(async () => {
       await vi.advanceTimersByTimeAsync(2000)
     })

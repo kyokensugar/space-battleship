@@ -15,7 +15,7 @@ const renderApp = (play: (name: string) => void) =>
   )
 
 const startBattle = () => {
-  fireEvent.click(screen.getByRole('button', { name: 'ゲーム開始' }))
+  fireEvent.click(screen.getByRole('button', { name: '出撃準備へ' }))
   fireEvent.click(screen.getByRole('button', { name: 'ランダム配置' }))
   fireEvent.click(screen.getByRole('button', { name: '出撃' }))
 }
@@ -32,7 +32,7 @@ describe('sound', () => {
     const play = vi.fn()
     renderApp(play)
     startBattle()
-    fireEvent.click(screen.getByRole('gridcell', { name: /敵の宙域 A1 / }))
+    fireEvent.click(screen.getByRole('gridcell', { name: /エイリアン宙域 A1 / }))
     expect(play).toHaveBeenNthCalledWith(1, 'fire')
     expect(['miss', 'hit']).toContain(play.mock.calls[1][0])
   })
@@ -44,7 +44,7 @@ describe('sound', () => {
     expect(screen.getByRole('button', { name: '音を出す' })).toHaveAttribute('aria-pressed', 'true')
     expect(loadMuted()).toBe(true)
     startBattle()
-    fireEvent.click(screen.getByRole('gridcell', { name: /敵の宙域 A1 / }))
+    fireEvent.click(screen.getByRole('gridcell', { name: /エイリアン宙域 A1 / }))
     expect(play).not.toHaveBeenCalled()
   })
 })
