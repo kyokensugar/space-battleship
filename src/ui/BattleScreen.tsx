@@ -18,6 +18,33 @@ type Props = {
   difficulty: Difficulty
   onFinish: (winner: Player) => void
   aiDelayMs?: number
+  bannerMs?: number
+}
+
+type Banner = { who: Player; ship: ShipKind; id: number }
+
+/** Full-screen finale shown once a fleet is destroyed. Stars drift for a win, a red alert pulses for a loss. */
+function ResultOverlay({ winner, onContinue }: { winner: Player; onContinue: () => void }) {
+  const { t } = useI18n()
+  const won = winner === 'player'
+  return (
+    <div className={`result-overlay ${won ? 'win' : 'lose'}`} role="dialog" aria-labelledby="result-title">
+      {won && (
+        <div className="confetti" aria-hidden="true">
+          {Array.from({ length: 24 }, (_, i) => (
+            <span key={i} style={{ left: `${(i * 37) % 100}%`, animationDelay: `${(i % 6) * 0.25}s` }} />
+          ))}
+        </div>
+      )}
+      <div className="result-card">
+        <h2 id="result-title">{won ? t.result.win : t.result.lose}</h2>
+        <p>{won ? t.battle.win : t.battle.lose}</p>
+        <button type="button" className="primary" onClick={onContinue}>
+          {t.battle.toResult}
+        </button>
+      </div>
+    </div>
+  )
 }
 
 type LogEntry = { who: Player; target: Coord; outcome: ShotOutcome; sunkShip?: ShipKind }
@@ -64,9 +91,11 @@ function FleetStatus({ side, title }: { side: Side; title: string }) {
   )
 }
 
-export function BattleScreen({ playerFleet, aiFleet, difficulty, onFinish, aiDelayMs = 700 }: Props) {
+export function BattleScreen({ playerFleet, aiFleet, difficulty, onFinish, aiDelayMs = 700, bannerMs = 1800 }: Props) {
   const [state, setState] = useState<GameState>(() => startBattle(playerFleet, aiFleet))
   const [log, setLog] = useState<LogEntry[]>([])
+  const [banner, setBanner] = useState<Banner | null>(null)
+  const [shake, setShake] = useState(false)
   const { t } = useI18n()
   const { play } = useSound()
   const playRef = useRef(play)
@@ -86,7 +115,23 @@ export function BattleScreen({ playerFleet, aiFleet, difficulty, onFinish, aiDel
     sfx(result.outcome)
     if (result.state.phase === 'finished') sfx(result.state.winner === 'player' ? 'win' : 'lose')
     setLog((prev) => [{ who: from.currentTurn, target, outcome: result.outcome, sunkShip: result.sunkShip }, ...prev])
+    if (result.outcome !== 'miss') setShake(true)
+    if (result.outcome === 'sunk' && result.sunkShip) {
+      setBanner({ who: from.currentTurn, ship: result.sunkShip, id: result.state.turnCount })
+    }
   }
+
+  useEffect(() => {
+    if (!shake) return
+    const timer = setTimeout(() => setShake(false), 400)
+    return () => clearTimeout(timer)
+  }, [shake])
+
+  useEffect(() => {
+    if (!banner) return
+    const timer = setTimeout(() => setBanner(null), bannerMs)
+    return () => clearTimeout(timer)
+  }, [banner, bannerMs])
 
   useEffect(() => {
     if (state.phase !== 'battle' || state.currentTurn !== 'ai') return
@@ -108,8 +153,13 @@ export function BattleScreen({ playerFleet, aiFleet, difficulty, onFinish, aiDel
       : t.battle.aiTurn
 
   return (
-    <section className="battle">
+    <section className={`battle ${shake ? 'shake' : ''}`}>
       <h2>{t.battle.heading}</h2>
+      {banner && (
+        <div key={banner.id} className={`sunk-banner ${banner.who === 'player' ? 'enemy-down' : 'own-down'}`} role="alert">
+          {banner.who === 'player' ? t.battle.sunkEnemy(t.shipNames[banner.ship]) : t.battle.sunkOwn(t.shipNames[banner.ship])}
+        </div>
+      )}
       <p className={`status ${finished ? (state.winner === 'player' ? 'win' : 'lose') : ''}`} role="status">
         {status}
       </p>
@@ -136,11 +186,7 @@ export function BattleScreen({ playerFleet, aiFleet, difficulty, onFinish, aiDel
           </ol>
         </aside>
       </div>
-      {winner && (
-        <button type="button" className="primary" onClick={() => onFinish(winner)}>
-          {t.battle.toResult}
-        </button>
-      )}
+      {winner && <ResultOverlay winner={winner} onContinue={() => onFinish(winner)} />}
     </section>
   )
 }

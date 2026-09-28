@@ -55,6 +55,11 @@ describe('BattleScreen', () => {
     fireEvent.click(enemyCell('B5'))
     expect(screen.getByText(/偵察艇を撃沈!!/)).toBeInTheDocument()
     expect(enemyCell('A5')).toHaveAccessibleName(/sunk$/)
+    expect(screen.getByRole('alert')).toHaveTextContent('敵の偵察艇を撃沈!')
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(2000)
+    })
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument()
 
     // Sink the rest. Each player shot is followed by one (random) AI shot on a 17-cell fleet,
     // so the AI cannot win before we finish 15 more hits.
@@ -70,6 +75,7 @@ describe('BattleScreen', () => {
       }
     }
     expect(screen.getByRole('status')).toHaveTextContent('勝利')
+    expect(screen.getByRole('dialog', { name: '勝利!' })).toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: '結果へ' }))
     expect(onFinish).toHaveBeenCalledWith('player')
   })

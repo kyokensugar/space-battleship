@@ -90,3 +90,194 @@
 .battle-log li:first-child {
   color: var(--text-h);
 }
+
+/* Screen shake on hit/sunk */
+.battle.shake {
+  animation: shake 0.4s ease-out;
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  20% {
+    transform: translate(-4px, 2px);
+  }
+  40% {
+    transform: translate(4px, -2px);
+  }
+  60% {
+    transform: translate(-3px, -1px);
+  }
+  80% {
+    transform: translate(2px, 1px);
+  }
+}
+
+/* Sunk banner slides across the top */
+.sunk-banner {
+  position: fixed;
+  top: 18%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  padding: 14px 32px;
+  border-radius: 12px;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--text-h);
+  background: rgba(5, 8, 22, 0.85);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(8px);
+  pointer-events: none;
+  animation: banner 1.8s ease-out forwards;
+}
+
+.sunk-banner.enemy-down {
+  border-color: var(--hit);
+  box-shadow: 0 0 30px rgba(249, 115, 22, 0.6);
+  text-shadow: 0 0 16px rgba(249, 115, 22, 0.9);
+}
+
+.sunk-banner.own-down {
+  border-color: var(--sunk);
+  box-shadow: 0 0 30px rgba(220, 38, 38, 0.6);
+  text-shadow: 0 0 16px rgba(220, 38, 38, 0.9);
+}
+
+@keyframes banner {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) scale(0.6);
+  }
+  15% {
+    opacity: 1;
+    transform: translateX(-50%) scale(1.05);
+  }
+  25% {
+    transform: translateX(-50%) scale(1);
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-20px);
+  }
+}
+
+/* Full-screen result overlay */
+.result-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: overlay-in 0.8s ease-out both;
+}
+
+.result-overlay.win {
+  background: radial-gradient(circle at center, rgba(56, 189, 248, 0.25), rgba(3, 6, 18, 0.9) 70%);
+}
+
+.result-overlay.lose {
+  background: radial-gradient(circle at center, rgba(3, 6, 18, 0.7), rgba(120, 10, 10, 0.85) 80%);
+  animation:
+    overlay-in 0.8s ease-out both,
+    red-alert 1.6s ease-in-out 0.8s infinite alternate;
+}
+
+@keyframes overlay-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes red-alert {
+  from {
+    box-shadow: inset 0 0 80px rgba(220, 38, 38, 0.3);
+  }
+  to {
+    box-shadow: inset 0 0 200px rgba(220, 38, 38, 0.8);
+  }
+}
+
+.result-card {
+  text-align: center;
+  padding: 32px 48px;
+  border-radius: 16px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(10px);
+  animation: card-in 0.7s cubic-bezier(0.2, 1.4, 0.4, 1) 0.4s both;
+}
+
+.result-card h2 {
+  font-size: 3rem;
+  margin-bottom: 8px;
+  letter-spacing: 0.15em;
+}
+
+.result-overlay.win .result-card h2 {
+  color: #7ee08a;
+  text-shadow: 0 0 30px rgba(126, 224, 138, 0.8);
+}
+
+.result-overlay.lose .result-card h2 {
+  color: #ff7b7b;
+  text-shadow: 0 0 30px rgba(255, 123, 123, 0.8);
+}
+
+@keyframes card-in {
+  from {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Confetti stars for a win */
+.confetti {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.confetti span {
+  position: absolute;
+  top: -10px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #fde68a;
+  box-shadow: 0 0 8px #fde68a;
+  animation: fall 3s linear infinite;
+}
+
+.confetti span:nth-child(3n) {
+  background: #7dd3fc;
+  box-shadow: 0 0 8px #7dd3fc;
+}
+
+.confetti span:nth-child(3n + 1) {
+  background: #c4b5fd;
+  box-shadow: 0 0 8px #c4b5fd;
+  width: 4px;
+  height: 4px;
+}
+
+@keyframes fall {
+  to {
+    transform: translateY(110vh) rotate(360deg);
+  }
+}
