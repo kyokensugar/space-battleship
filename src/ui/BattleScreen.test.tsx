@@ -53,7 +53,7 @@ describe('BattleScreen', () => {
     fireEvent.click(enemyCell('A5'))
     await aiTurn()
     fireEvent.click(enemyCell('B5'))
-    expect(screen.getByText(/偵察艇を撃沈!!/)).toBeInTheDocument()
+    expect(screen.getByText(/斥候虫を撃沈!!/)).toBeInTheDocument()
     expect(enemyCell('A5')).toHaveAccessibleName(/sunk$/)
     expect(screen.getByRole('alert')).toHaveTextContent('エイリアンの斥候虫を撃沈!')
     await act(async () => {
