@@ -186,6 +186,16 @@ export function BattleScreen({ playerFleet, aiFleet, difficulty, onFinish, aiDel
   const alien = alienSpeech(t, state, log[0])
   const aiThinking = state.phase === 'battle' && state.currentTurn === 'ai'
 
+  // Phones stack the boards, so follow the action: our sector while the alien aims, theirs when it is our turn.
+  const enemyBoardRef = useRef<HTMLDivElement>(null)
+  const ownBoardRef = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    if (state.phase !== 'battle' || log.length === 0) return
+    if (!window.matchMedia?.('(max-width: 640px)').matches) return
+    const target = state.currentTurn === 'ai' ? ownBoardRef.current : enemyBoardRef.current
+    target?.scrollIntoView?.({ behavior: 'smooth', block: 'center' })
+  }, [state.currentTurn, state.phase, log.length])
+
   return (
     <section className={`battle ${shake ? 'shake' : ''}`}>
       <h2>{t.battle.heading}</h2>
@@ -193,8 +203,15 @@ export function BattleScreen({ playerFleet, aiFleet, difficulty, onFinish, aiDel
         {status}
       </p>
       <div className="battle-body">
-        <div className="board-block alien">
-          <Captain mood={speech.mood} line={speech.line} lineKey={log.length} />
+        <Captain className="cmd-human" mood={speech.mood} line={speech.line} lineKey={log.length} />
+        <Captain
+          className="cmd-alien"
+          speaker="alien"
+          mood={alien.mood}
+          line={alien.line}
+          lineKey={`${log.length}-${state.currentTurn}`}
+        />
+        <div className="board-block alien" ref={enemyBoardRef}>
           <Grid
             label={t.battle.enemySector}
             cellState={sideCellState(state.ai, false)}
@@ -203,8 +220,7 @@ export function BattleScreen({ playerFleet, aiFleet, difficulty, onFinish, aiDel
           />
           <FleetStatus side={state.ai} owner="ai" title={t.battle.enemyFleet} />
         </div>
-        <div className="board-block">
-          <Captain speaker="alien" mood={alien.mood} line={alien.line} lineKey={`${log.length}-${state.currentTurn}`} />
+        <div className="board-block own" ref={ownBoardRef}>
           <div className="board-wrap">
             <Grid label={t.placement.ownSector} cellState={sideCellState(state.player, true)} disabled />
             {aiThinking && aiDelayMs > 0 && (

@@ -28,24 +28,46 @@
 }
 
 .battle-body {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 24px;
+  display: grid;
+  grid-template-columns: max-content max-content minmax(200px, 1fr);
+  grid-template-areas:
+    'cmd-human cmd-alien log'
+    'board-alien board-own log';
+  gap: 12px 24px;
+  align-items: start;
+}
+
+.battle-body .captain {
+  margin: 0;
+  max-width: none;
+  min-height: 92px;
   align-items: flex-start;
+}
+
+.cmd-human {
+  grid-area: cmd-human;
+}
+
+.cmd-alien {
+  grid-area: cmd-alien;
+}
+
+.board-block.alien {
+  grid-area: board-alien;
+}
+
+.board-block.own {
+  grid-area: board-own;
+}
+
+.battle-log {
+  grid-area: log;
 }
 
 .board-block {
   display: flex;
   flex-direction: column;
   gap: 8px;
-}
-
-.board-block .captain {
-  margin: 0;
-  width: 100%;
-  max-width: none;
-  min-height: 92px;
-  align-items: flex-start;
 }
 
 .fleet-status h3,
@@ -79,7 +101,7 @@
 }
 
 .battle-log {
-  min-width: 240px;
+  min-width: 0;
   max-width: 320px;
 }
 
@@ -110,6 +132,7 @@
   left: 0;
   width: 34px;
   height: 34px;
+  margin: -17px 0 0 -17px;
   pointer-events: none;
   border: 2px solid #7ef5b0;
   border-radius: 50%;
@@ -145,26 +168,31 @@
 @keyframes scan {
   0% {
     opacity: 0;
-    transform: translate(60px, 60px);
+    left: 20%;
+    top: 20%;
   }
   10% {
     opacity: 1;
   }
   30% {
-    transform: translate(300px, 120px);
+    left: 78%;
+    top: 34%;
   }
   55% {
-    transform: translate(120px, 320px);
+    left: 34%;
+    top: 82%;
   }
   80% {
-    transform: translate(280px, 260px);
+    left: 72%;
+    top: 68%;
   }
   95% {
     opacity: 1;
   }
   100% {
     opacity: 0;
-    transform: translate(200px, 200px);
+    left: 54%;
+    top: 54%;
   }
 }
 
@@ -327,4 +355,65 @@
 .fleet-status.ai li.sunk {
   border-color: rgba(168, 85, 247, 0.6);
   background: rgba(168, 85, 247, 0.12);
+}
+
+/* Phones: boards stack, commanders stay pinned at the top so alien lines are never missed */
+@media (max-width: 640px) {
+  .battle-body {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      'cmd-human'
+      'cmd-alien'
+      'board-alien'
+      'board-own'
+      'log';
+    gap: 8px;
+  }
+
+  .battle-body .captain {
+    position: sticky;
+    z-index: 5;
+    min-height: 0;
+    padding: 4px 0;
+    background: rgba(3, 6, 18, 0.94);
+  }
+
+  .cmd-human {
+    top: 0;
+  }
+
+  .cmd-alien {
+    top: 60px;
+  }
+
+  .battle-body .captain-face {
+    width: 44px;
+    height: 44px;
+  }
+
+  .battle-body .captain-bubble {
+    font-size: 0.9rem;
+    padding: 8px 12px;
+    line-height: 1.35;
+  }
+
+  .board-block {
+    align-items: center;
+  }
+
+  .battle-log {
+    max-width: none;
+  }
+
+  .battle-log ol {
+    max-height: 160px;
+  }
+
+  .result-card {
+    padding: 20px 16px;
+  }
+
+  .result-card h2 {
+    font-size: 2rem;
+  }
 }
