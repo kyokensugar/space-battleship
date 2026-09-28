@@ -8,19 +8,19 @@
 
 .commanders {
   display: flex;
-  flex-wrap: wrap;
-  gap: 16px 32px;
+  flex-direction: column;
+  gap: 10px;
   width: 100%;
-  justify-content: space-between;
+  max-width: 720px;
 }
 
 .commanders .captain {
-  flex: 1 1 320px;
   margin: 0;
 }
 
 .captain.alien {
   flex-direction: row-reverse;
+  align-self: flex-end;
 }
 
 .captain.alien .captain-face {

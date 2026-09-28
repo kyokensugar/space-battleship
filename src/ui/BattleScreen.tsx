@@ -19,10 +19,7 @@ type Props = {
   difficulty: Difficulty
   onFinish: (winner: Player) => void
   aiDelayMs?: number
-  bannerMs?: number
 }
-
-type Banner = { who: Player; ship: ShipKind; id: number }
 
 /** Full-screen finale shown once a fleet is destroyed. Stars drift for a win, a red alert pulses for a loss. */
 function ResultOverlay({ winner, onContinue }: { winner: Player; onContinue: () => void }) {
@@ -134,10 +131,9 @@ function FleetStatus({ side, owner, title }: { side: Side; owner: Player; title:
   )
 }
 
-export function BattleScreen({ playerFleet, aiFleet, difficulty, onFinish, aiDelayMs = 2200, bannerMs = 1800 }: Props) {
+export function BattleScreen({ playerFleet, aiFleet, difficulty, onFinish, aiDelayMs = 2200}: Props) {
   const [state, setState] = useState<GameState>(() => startBattle(playerFleet, aiFleet))
   const [log, setLog] = useState<LogEntry[]>([])
-  const [banner, setBanner] = useState<Banner | null>(null)
   const [shake, setShake] = useState(false)
   const { t } = useI18n()
   const { play } = useSound()
@@ -159,9 +155,6 @@ export function BattleScreen({ playerFleet, aiFleet, difficulty, onFinish, aiDel
     if (result.state.phase === 'finished') sfx(result.state.winner === 'player' ? 'win' : 'lose')
     setLog((prev) => [{ who: from.currentTurn, target, outcome: result.outcome, sunkShip: result.sunkShip }, ...prev])
     if (result.outcome !== 'miss') setShake(true)
-    if (result.outcome === 'sunk' && result.sunkShip) {
-      setBanner({ who: from.currentTurn, ship: result.sunkShip, id: result.state.turnCount })
-    }
   }
 
   useEffect(() => {
@@ -169,12 +162,6 @@ export function BattleScreen({ playerFleet, aiFleet, difficulty, onFinish, aiDel
     const timer = setTimeout(() => setShake(false), 400)
     return () => clearTimeout(timer)
   }, [shake])
-
-  useEffect(() => {
-    if (!banner) return
-    const timer = setTimeout(() => setBanner(null), bannerMs)
-    return () => clearTimeout(timer)
-  }, [banner, bannerMs])
 
   useEffect(() => {
     if (state.phase !== 'battle' || state.currentTurn !== 'ai') return
@@ -206,13 +193,6 @@ export function BattleScreen({ playerFleet, aiFleet, difficulty, onFinish, aiDel
         <Captain mood={speech.mood} line={speech.line} lineKey={log.length} />
         <Captain speaker="alien" mood={alien.mood} line={alien.line} lineKey={`${log.length}-${state.currentTurn}`} />
       </div>
-      {banner && (
-        <div key={banner.id} className={`sunk-banner ${banner.who === 'player' ? 'enemy-down' : 'own-down'}`} role="alert">
-          {banner.who === 'player'
-            ? t.battle.sunkEnemy(shipName(t, 'ai', banner.ship))
-            : t.battle.sunkOwn(shipName(t, 'player', banner.ship))}
-        </div>
-      )}
       <p className={`status ${finished ? (state.winner === 'player' ? 'win' : 'lose') : ''}`} role="status">
         {status}
       </p>

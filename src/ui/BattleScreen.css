@@ -184,52 +184,6 @@
   }
 }
 
-/* Sunk banner fades in place (no motion, so it does not fight the screen shake) */
-.sunk-banner {
-  position: fixed;
-  top: 18%;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 10;
-  padding: 14px 32px;
-  border-radius: 12px;
-  font-size: 1.5rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  color: var(--text-h);
-  background: rgba(5, 8, 22, 0.85);
-  border: 1px solid var(--border);
-  backdrop-filter: blur(8px);
-  pointer-events: none;
-  animation: banner 1.8s ease-out forwards;
-}
-
-.sunk-banner.enemy-down {
-  border-color: var(--hit);
-  box-shadow: 0 0 30px rgba(249, 115, 22, 0.6);
-  text-shadow: 0 0 16px rgba(249, 115, 22, 0.9);
-}
-
-.sunk-banner.own-down {
-  border-color: var(--sunk);
-  box-shadow: 0 0 30px rgba(220, 38, 38, 0.6);
-  text-shadow: 0 0 16px rgba(220, 38, 38, 0.9);
-}
-
-@keyframes banner {
-  0% {
-    opacity: 0;
-  }
-  10% {
-    opacity: 1;
-  }
-  80% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-  }
-}
 
 /* Full-screen result overlay */
 .result-overlay {

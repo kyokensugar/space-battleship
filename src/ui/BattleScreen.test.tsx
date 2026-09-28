@@ -88,11 +88,6 @@ describe('BattleScreen', () => {
     fireEvent.click(enemyCell('B5'))
     expect(screen.getByText(/斥候虫を撃沈!!/)).toBeInTheDocument()
     expect(enemyCell('A5')).toHaveAccessibleName(/sunk$/)
-    expect(screen.getByRole('alert')).toHaveTextContent('エイリアンの斥候虫を撃沈!')
-    await act(async () => {
-      await vi.advanceTimersByTimeAsync(2000)
-    })
-    expect(screen.queryByRole('alert')).not.toBeInTheDocument()
 
     // Sink the rest. Each player shot is followed by one (random) AI shot on a 17-cell fleet,
     // so the AI cannot win before we finish 15 more hits.
