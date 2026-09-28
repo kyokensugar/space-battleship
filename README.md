@@ -40,7 +40,12 @@ src/
 
 ## 公開(デプロイ)
 
-`main` に取り込まれると GitHub Actions(`.github/workflows/deploy.yml`)がビルドし、GitHub Pages に自動公開します。
+`main` に取り込まれると GitHub Actions(`.github/workflows/deploy.yml`)がビルドし、`gh-pages` ブランチ経由で GitHub Pages に自動公開します。
+
+### PR のお試し URL(プレビュー)
+
+PR を開くと `.github/workflows/preview.yml` が `https://kyokensugar.github.io/space-battleship/pr-<番号>/` に
+その PR の内容を公開し、URL を PR にコメントします。PR の更新ごとに差し替わり、クローズ/マージで削除されます。
 
 ## ドキュメント
 

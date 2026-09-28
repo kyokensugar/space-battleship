@@ -5,7 +5,8 @@ import { defineConfig } from 'vite'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
-  base: '/space-battleship/',
+  // Production is served from the repo sub-path; PR previews override this with BASE_PATH=/space-battleship/pr-N/
+  base: process.env.BASE_PATH ?? '/space-battleship/',
   test: {
     environment: 'jsdom',
     globals: true,
