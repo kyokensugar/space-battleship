@@ -10,3 +10,24 @@ main {
   align-items: flex-start;
   gap: 16px;
 }
+
+.difficulty {
+  border: 1px solid var(--muted);
+  border-radius: 8px;
+  padding: 8px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.difficulty legend {
+  color: var(--muted);
+  padding: 0 4px;
+}
+
+.difficulty label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import { easyAi } from '../game/ai/easy'
+import type { Difficulty } from '../game/ai/index'
+import { AI_STRATEGIES } from '../game/ai/strategies'
 import { coordKey } from '../game/board'
 import { startBattle, takeTurn, type GameState, type Player } from '../game/rules'
 import { hasBeenShot, isShipSunk, type ShotOutcome, type Side } from '../game/shoot'
@@ -12,6 +13,7 @@ import './BattleScreen.css'
 type Props = {
   playerFleet: Fleet
   aiFleet: Fleet
+  difficulty: Difficulty
   onFinish: (winner: Player) => void
   aiDelayMs?: number
 }
@@ -58,7 +60,7 @@ function FleetStatus({ side, title }: { side: Side; title: string }) {
   )
 }
 
-export function BattleScreen({ playerFleet, aiFleet, onFinish, aiDelayMs = 700 }: Props) {
+export function BattleScreen({ playerFleet, aiFleet, difficulty, onFinish, aiDelayMs = 700 }: Props) {
   const [state, setState] = useState<GameState>(() => startBattle(playerFleet, aiFleet))
   const [log, setLog] = useState<string[]>([])
 
@@ -74,9 +76,9 @@ export function BattleScreen({ playerFleet, aiFleet, onFinish, aiDelayMs = 700 }
 
   useEffect(() => {
     if (state.phase !== 'battle' || state.currentTurn !== 'ai') return
-    const timer = setTimeout(() => fire(state, easyAi(state.player)), aiDelayMs)
+    const timer = setTimeout(() => fire(state, AI_STRATEGIES[difficulty](state.player)), aiDelayMs)
     return () => clearTimeout(timer)
-  }, [state, aiDelayMs])
+  }, [state, difficulty, aiDelayMs])
 
   const handleEnemyClick = (coord: Coord) => {
     if (!playersTurn || hasBeenShot(state.ai, coord)) return

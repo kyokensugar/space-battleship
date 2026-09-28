@@ -22,7 +22,7 @@ describe('BattleScreen', () => {
   afterEach(() => vi.useRealTimers())
 
   it('marks a miss and a hit on the enemy board and logs them', async () => {
-    render(<BattleScreen playerFleet={rowFleet} aiFleet={rowFleet} onFinish={() => {}} aiDelayMs={0} />)
+    render(<BattleScreen playerFleet={rowFleet} aiFleet={rowFleet} difficulty="easy" onFinish={() => {}} aiDelayMs={0} />)
     expect(screen.getByRole('status')).toHaveTextContent('あなたの番')
 
     fireEvent.click(enemyCell('A10'))
@@ -37,7 +37,7 @@ describe('BattleScreen', () => {
   })
 
   it('ignores clicks on already-shot cells and during the AI turn', async () => {
-    render(<BattleScreen playerFleet={rowFleet} aiFleet={rowFleet} onFinish={() => {}} aiDelayMs={0} />)
+    render(<BattleScreen playerFleet={rowFleet} aiFleet={rowFleet} difficulty="easy" onFinish={() => {}} aiDelayMs={0} />)
     fireEvent.click(enemyCell('A10'))
     fireEvent.click(enemyCell('B10'))
     expect(enemyCell('B10')).toHaveAccessibleName(/empty$/)
@@ -48,7 +48,7 @@ describe('BattleScreen', () => {
 
   it('shows sunk ships struck through and ends the game when all are destroyed', async () => {
     const onFinish = vi.fn()
-    render(<BattleScreen playerFleet={rowFleet} aiFleet={rowFleet} onFinish={onFinish} aiDelayMs={0} />)
+    render(<BattleScreen playerFleet={rowFleet} aiFleet={rowFleet} difficulty="easy" onFinish={onFinish} aiDelayMs={0} />)
 
     fireEvent.click(enemyCell('A5'))
     await aiTurn()

@@ -20,3 +20,15 @@ describe('App flow', () => {
     expect(screen.getByRole('grid', { name: '敵の宙域' })).toBeInTheDocument()
   })
 })
+
+describe('difficulty', () => {
+  it('defaults to Easy and lets the player pick Normal', () => {
+    render(<App />)
+    const easy = screen.getByRole('radio', { name: /Easy/ })
+    const normal = screen.getByRole('radio', { name: /Normal/ })
+    expect(easy).toBeChecked()
+    fireEvent.click(normal)
+    expect(normal).toBeChecked()
+    expect(easy).not.toBeChecked()
+  })
+})
