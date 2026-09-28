@@ -40,6 +40,14 @@
   gap: 8px;
 }
 
+.board-block .captain {
+  margin: 0;
+  width: 100%;
+  max-width: none;
+  min-height: 92px;
+  align-items: flex-start;
+}
+
 .fleet-status h3,
 .battle-log h3 {
   margin: 0 0 6px;
@@ -92,7 +100,7 @@
 }
 
 /* Alien targeting: a reticle sweeps over our sector while it "thinks" */
-.board-block {
+.board-wrap {
   position: relative;
 }
 

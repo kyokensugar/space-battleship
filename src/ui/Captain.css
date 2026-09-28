@@ -6,23 +6,6 @@
   margin: 0 auto 16px;
 }
 
-.commanders {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  width: 100%;
-  max-width: 720px;
-}
-
-.commanders .captain {
-  margin: 0;
-}
-
-.captain.alien {
-  flex-direction: row-reverse;
-  align-self: flex-end;
-}
-
 .captain.alien .captain-face {
   border-color: rgba(126, 245, 176, 0.5);
   box-shadow: 0 0 14px rgba(126, 245, 176, 0.3);
@@ -44,12 +27,7 @@
 }
 
 .captain.alien .captain-bubble::before {
-  left: auto;
-  right: -9px;
-  border-left: none;
-  border-bottom: none;
-  border-right: 1px solid rgba(126, 245, 176, 0.4);
-  border-top: 1px solid rgba(126, 245, 176, 0.4);
+  border-color: rgba(126, 245, 176, 0.4);
 }
 
 .captain-face {

@@ -189,15 +189,12 @@ export function BattleScreen({ playerFleet, aiFleet, difficulty, onFinish, aiDel
   return (
     <section className={`battle ${shake ? 'shake' : ''}`}>
       <h2>{t.battle.heading}</h2>
-      <div className="commanders">
-        <Captain mood={speech.mood} line={speech.line} lineKey={log.length} />
-        <Captain speaker="alien" mood={alien.mood} line={alien.line} lineKey={`${log.length}-${state.currentTurn}`} />
-      </div>
       <p className={`status ${finished ? (state.winner === 'player' ? 'win' : 'lose') : ''}`} role="status">
         {status}
       </p>
       <div className="battle-body">
         <div className="board-block alien">
+          <Captain mood={speech.mood} line={speech.line} lineKey={log.length} />
           <Grid
             label={t.battle.enemySector}
             cellState={sideCellState(state.ai, false)}
@@ -207,10 +204,13 @@ export function BattleScreen({ playerFleet, aiFleet, difficulty, onFinish, aiDel
           <FleetStatus side={state.ai} owner="ai" title={t.battle.enemyFleet} />
         </div>
         <div className="board-block">
-          <Grid label={t.placement.ownSector} cellState={sideCellState(state.player, true)} disabled />
-          {aiThinking && aiDelayMs > 0 && (
-            <div className="scan-reticle" aria-hidden="true" style={{ '--scan-ms': `${aiDelayMs}ms` } as CSSProperties} />
-          )}
+          <Captain speaker="alien" mood={alien.mood} line={alien.line} lineKey={`${log.length}-${state.currentTurn}`} />
+          <div className="board-wrap">
+            <Grid label={t.placement.ownSector} cellState={sideCellState(state.player, true)} disabled />
+            {aiThinking && aiDelayMs > 0 && (
+              <div className="scan-reticle" aria-hidden="true" style={{ '--scan-ms': `${aiDelayMs}ms` } as CSSProperties} />
+            )}
+          </div>
           <FleetStatus side={state.player} owner="player" title={t.battle.ownFleet} />
         </div>
         <aside className="battle-log">
