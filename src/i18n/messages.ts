@@ -41,6 +41,8 @@ export type Messages = {
     miss: string
     hit: string
     sunk: (ship: string) => string
+    sunkEnemy: (ship: string) => string
+    sunkOwn: (ship: string) => string
     toResult: string
   }
   sound: { mute: string; unmute: string }
@@ -92,6 +94,8 @@ const ja: Messages = {
     miss: 'ミス',
     hit: 'ヒット!',
     sunk: (ship) => `${ship}を撃沈!!`,
+    sunkEnemy: (ship) => `敵の${ship}を撃沈!`,
+    sunkOwn: (ship) => `${ship}が撃沈された…`,
     toResult: '結果へ',
   },
   sound: { mute: '音を消す', unmute: '音を出す' },
@@ -143,6 +147,8 @@ const en: Messages = {
     miss: 'Miss',
     hit: 'Hit!',
     sunk: (ship) => `${ship} sunk!!`,
+    sunkEnemy: (ship) => `Enemy ${ship} sunk!`,
+    sunkOwn: (ship) => `Your ${ship} was sunk…`,
     toResult: 'Results',
   },
   sound: { mute: 'Mute sound', unmute: 'Unmute sound' },
