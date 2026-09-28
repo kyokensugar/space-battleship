@@ -109,7 +109,7 @@ describe('BattleScreen', () => {
     }
     expect(screen.getByRole('status')).toHaveTextContent('勝利')
     const dialog = screen.getByRole('dialog', { name: '勝利!' })
-    expect(dialog).toHaveTextContent('勝ったぞ! ���陽系は守られた!')
+    expect(dialog).toHaveTextContent('勝ったぞ! 太陽系は守られた!')
     expect(dialog).toHaveTextContent('ありえん')
     fireEvent.click(screen.getByRole('button', { name: '結果へ' }))
     expect(onFinish).toHaveBeenCalledWith('player')
