@@ -273,7 +273,8 @@
 
 .result-card {
   text-align: center;
-  padding: 32px 48px;
+  padding: 32px 40px;
+  width: min(640px, 92vw);
   border-radius: 16px;
   background: var(--panel);
   border: 1px solid var(--border);
@@ -295,6 +296,18 @@
 .result-overlay.lose .result-card h2 {
   color: #ff7b7b;
   text-shadow: 0 0 30px rgba(255, 123, 123, 0.8);
+}
+
+.result-commanders {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 16px 0 20px;
+  text-align: left;
+}
+
+.result-commanders .captain {
+  margin: 0;
 }
 
 @keyframes card-in {

@@ -39,7 +39,10 @@ function ResultOverlay({ winner, onContinue }: { winner: Player; onContinue: () 
       )}
       <div className="result-card">
         <h2 id="result-title">{won ? t.result.win : t.result.lose}</h2>
-        <p>{won ? t.battle.win : t.battle.lose}</p>
+        <div className="result-commanders">
+          <Captain mood={won ? 'happy' : 'sad'} line={won ? t.captain.win : t.captain.lose} />
+          <Captain speaker="alien" mood={won ? 'sad' : 'happy'} line={won ? t.alienCaptain.lose : t.alienCaptain.win} />
+        </div>
         <button type="button" className="primary" onClick={onContinue}>
           {t.battle.toResult}
         </button>
