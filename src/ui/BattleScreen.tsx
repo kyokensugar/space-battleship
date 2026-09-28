@@ -7,7 +7,8 @@ import { hasBeenShot, isShipSunk, type ShotOutcome, type Side } from '../game/sh
 import type { Coord, Fleet, ShipKind } from '../game/types'
 import { coordLabel } from './coordLabel'
 import { Grid, type CellState } from './Grid'
-import { SHIP_NAMES } from './shipNames'
+import { useI18n } from '../i18n/context'
+import type { Messages } from '../i18n/messages'
 import './BattleScreen.css'
 
 type Props = {
@@ -18,13 +19,14 @@ type Props = {
   aiDelayMs?: number
 }
 
-const WHO = { player: 'あなた', ai: 'AI' } as const
+type LogEntry = { who: Player; target: Coord; outcome: ShotOutcome; sunkShip?: ShipKind }
 
-function describeShot(who: Player, target: Coord, outcome: ShotOutcome, sunkShip?: ShipKind) {
-  const base = `${WHO[who]}が ${coordLabel(target)} を砲撃 → `
-  if (outcome === 'miss') return base + 'ミス'
-  if (outcome === 'hit') return base + 'ヒット!'
-  return base + `${sunkShip ? SHIP_NAMES[sunkShip] : '艦'}を撃沈!!`
+/** Log entries are stored as data and rendered in the current language. */
+function describeShot(t: Messages, { who, target, outcome, sunkShip }: LogEntry) {
+  const base = t.battle.shot(t.who[who], coordLabel(target))
+  if (outcome === 'miss') return base + t.battle.miss
+  if (outcome === 'hit') return base + t.battle.hit
+  return base + t.battle.sunk(sunkShip ? t.shipNames[sunkShip] : '?')
 }
 
 /** Cell state for a board as seen by the viewer. `revealShips` shows intact ship cells (own board). */
@@ -46,13 +48,14 @@ function sideCellState(side: Side, revealShips: boolean) {
 }
 
 function FleetStatus({ side, title }: { side: Side; title: string }) {
+  const { t } = useI18n()
   return (
     <div className="fleet-status">
       <h3>{title}</h3>
       <ul>
         {side.fleet.map((ship) => (
           <li key={ship.kind} className={isShipSunk(side, ship) ? 'sunk' : ''}>
-            {SHIP_NAMES[ship.kind]}
+            {t.shipNames[ship.kind]}
           </li>
         ))}
       </ul>
@@ -62,7 +65,8 @@ function FleetStatus({ side, title }: { side: Side; title: string }) {
 
 export function BattleScreen({ playerFleet, aiFleet, difficulty, onFinish, aiDelayMs = 700 }: Props) {
   const [state, setState] = useState<GameState>(() => startBattle(playerFleet, aiFleet))
-  const [log, setLog] = useState<string[]>([])
+  const [log, setLog] = useState<LogEntry[]>([])
+  const { t } = useI18n()
 
   const finished = state.phase === 'finished'
   const winner = state.winner
@@ -71,7 +75,7 @@ export function BattleScreen({ playerFleet, aiFleet, difficulty, onFinish, aiDel
   const fire = (from: GameState, target: Coord) => {
     const result = takeTurn(from, target)
     setState(result.state)
-    setLog((prev) => [describeShot(from.currentTurn, target, result.outcome, result.sunkShip), ...prev])
+    setLog((prev) => [{ who: from.currentTurn, target, outcome: result.outcome, sunkShip: result.sunkShip }, ...prev])
   }
 
   useEffect(() => {
@@ -87,44 +91,44 @@ export function BattleScreen({ playerFleet, aiFleet, difficulty, onFinish, aiDel
 
   const status = finished
     ? state.winner === 'player'
-      ? '勝利! 敵艦隊を全滅させた'
-      : '敗北… 自艦隊が全滅した'
+      ? t.battle.win
+      : t.battle.lose
     : playersTurn
-      ? 'あなたの番: 敵宙域をクリックして砲撃'
-      : 'AI の番…'
+      ? t.battle.yourTurn
+      : t.battle.aiTurn
 
   return (
     <section className="battle">
-      <h2>戦闘</h2>
+      <h2>{t.battle.heading}</h2>
       <p className={`status ${finished ? (state.winner === 'player' ? 'win' : 'lose') : ''}`} role="status">
         {status}
       </p>
       <div className="battle-body">
         <div className="board-block">
           <Grid
-            label="敵の宙域"
+            label={t.battle.enemySector}
             cellState={sideCellState(state.ai, false)}
             onCellClick={handleEnemyClick}
             disabled={!playersTurn}
           />
-          <FleetStatus side={state.ai} title="敵の残艦" />
+          <FleetStatus side={state.ai} title={t.battle.enemyFleet} />
         </div>
         <div className="board-block">
-          <Grid label="自分の宙域" cellState={sideCellState(state.player, true)} disabled />
-          <FleetStatus side={state.player} title="自分の残艦" />
+          <Grid label={t.placement.ownSector} cellState={sideCellState(state.player, true)} disabled />
+          <FleetStatus side={state.player} title={t.battle.ownFleet} />
         </div>
         <aside className="battle-log">
-          <h3>戦況ログ(第 {state.turnCount} 手)</h3>
+          <h3>{t.battle.log(state.turnCount)}</h3>
           <ol>
-            {log.map((line, i) => (
-              <li key={log.length - i}>{line}</li>
+            {log.map((entry, i) => (
+              <li key={log.length - i}>{describeShot(t, entry)}</li>
             ))}
           </ol>
         </aside>
       </div>
       {winner && (
         <button type="button" className="primary" onClick={() => onFinish(winner)}>
-          結果へ
+          {t.battle.toResult}
         </button>
       )}
     </section>
