@@ -64,6 +64,19 @@ export type Messages = {
     win: string
     lose: string
   }
+  alienCaptain: {
+    name: string
+    open: string
+    thinking: string
+    playerHit: string
+    playerMiss: string
+    playerSunk: (ship: string) => string
+    enemyHit: string
+    enemyMiss: string
+    enemySunk: (ship: string) => string
+    win: string
+    lose: string
+  }
   result: {
     win: string
     lose: string
@@ -136,6 +149,19 @@ const ja: Messages = {
     win: '勝ったぞ! 太陽系は守られた!',
     lose: '……全滅か。だが、人類はまだ終わらん。',
   },
+  alienCaptain: {
+    name: 'エイリアン司令',
+    open: 'ヒトよ、この宙域は我らのものだ。消え去れ。',
+    thinking: '……どこに潜んでいる……感じるぞ……',
+    playerHit: 'ぐぬぅ……! 偶然だ、偶然に決まっている!',
+    playerMiss: 'クククッ、そこには何もない。無駄弾だ。',
+    playerSunk: (ship) => `${ship}が……!! おのれ、ヒトめ……!`,
+    enemyHit: 'そこだ! 燃えろ、ヒトの鉄クズ!',
+    enemyMiss: 'チッ……逃げおったか。次は外さん。',
+    enemySunk: (ship) => `${ship}、撃沈。ヒトの艦などこの程度か。`,
+    win: '愚かなヒトよ、これが力の差だ。太陽系はいただく。',
+    lose: 'あ……ありえん……我らが……ヒトに……!',
+  },
   result: {
     win: '勝利!',
     lose: '敗北…',
@@ -207,6 +233,19 @@ const en: Messages = {
     enemySunk: (ship) => `We lost our ${ship}…`,
     win: 'We did it! The solar system is safe!',
     lose: '…Fleet lost. But humanity is not finished yet.',
+  },
+  alienCaptain: {
+    name: 'Alien Commander',
+    open: 'Humans. This sector belongs to us. Begone.',
+    thinking: '…Where are you hiding… I can sense you…',
+    playerHit: 'Grrr…! Luck. Nothing but luck!',
+    playerMiss: 'Heh heh… nothing there. Wasted shot.',
+    playerSunk: (ship) => `Our ${ship}…!! You will pay for that, human!`,
+    enemyHit: 'There! Burn, human scrap metal!',
+    enemyMiss: 'Tch… slipped away. I will not miss twice.',
+    enemySunk: (ship) => `${ship} destroyed. Is this all human ships can do?`,
+    win: 'Foolish humans. Behold the gap in our power. The solar system is ours.',
+    lose: 'Im…possible… we… to humans…!',
   },
   result: {
     win: 'Victory!',

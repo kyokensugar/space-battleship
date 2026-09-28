@@ -6,6 +6,52 @@
   margin: 0 auto 16px;
 }
 
+.commanders {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px 32px;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.commanders .captain {
+  flex: 1 1 320px;
+  margin: 0;
+}
+
+.captain.alien {
+  flex-direction: row-reverse;
+}
+
+.captain.alien .captain-face {
+  border-color: rgba(126, 245, 176, 0.5);
+  box-shadow: 0 0 14px rgba(126, 245, 176, 0.3);
+}
+
+.captain.alien.happy .captain-face {
+  border-color: #7ef5b0;
+  box-shadow: 0 0 18px rgba(126, 245, 176, 0.6);
+}
+
+.captain.alien.sad .captain-face {
+  border-color: #a855f7;
+  box-shadow: 0 0 18px rgba(168, 85, 247, 0.6);
+}
+
+.captain.alien .captain-bubble {
+  border-color: rgba(126, 245, 176, 0.4);
+  color: #d7fbe6;
+}
+
+.captain.alien .captain-bubble::before {
+  left: auto;
+  right: -9px;
+  border-left: none;
+  border-bottom: none;
+  border-right: 1px solid rgba(126, 245, 176, 0.4);
+  border-top: 1px solid rgba(126, 245, 176, 0.4);
+}
+
 .captain-face {
   width: 72px;
   height: 72px;
