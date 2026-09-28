@@ -23,14 +23,15 @@ type Props = {
   line: string
   /** Changing this replays the bubble's entrance animation. */
   lineKey?: string | number
+  className?: string
 }
 
 /** A commander portrait plus a speech bubble. The alien version is mirrored (portrait on the right). */
-export function Captain({ speaker = 'human', mood, line, lineKey }: Props) {
+export function Captain({ speaker = 'human', mood, line, lineKey, className = '' }: Props) {
   const { t } = useI18n()
   const name = speaker === 'human' ? t.captain.name : t.alienCaptain.name
   return (
-    <div className={`captain ${speaker} ${mood}`} data-testid={speaker === 'human' ? 'captain' : 'alien-captain'}>
+    <div className={`captain ${speaker} ${mood} ${className}`} data-testid={speaker === 'human' ? 'captain' : 'alien-captain'}>
       <img className="captain-face" src={FACES[speaker][mood]} width={256} height={256} alt={name} />
       <p key={lineKey} className="captain-bubble">
         {line}

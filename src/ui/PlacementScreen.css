@@ -46,3 +46,15 @@
   flex-wrap: wrap;
   gap: 8px;
 }
+
+@media (max-width: 640px) {
+  .placement-body {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .placement-panel {
+    width: 100%;
+    box-sizing: border-box;
+  }
+}

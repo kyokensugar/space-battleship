@@ -201,7 +201,8 @@
 
 @media (max-width: 640px) {
   .grid {
-    --cell: 28px;
+    --cell: clamp(26px, calc((100vw - 56px) / 11), 34px);
+    padding: 6px;
   }
 }
 

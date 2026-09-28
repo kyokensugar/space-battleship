@@ -114,6 +114,7 @@
 .difficulty {
   width: 100%;
   max-width: 760px;
+  box-sizing: border-box;
 }
 
 .difficulty-cards {
