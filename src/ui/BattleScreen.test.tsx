@@ -53,6 +53,22 @@ describe('BattleScreen', () => {
     expect(captain()).toHaveTextContent('相手の斥候虫を沈めたぞ!')
   })
 
+  it('alien commander taunts on misses, thinks during its turn and sulks when hit', async () => {
+    render(<BattleScreen playerFleet={rowFleet} aiFleet={rowFleet} difficulty="easy" onFinish={() => {}} aiDelayMs={0} />)
+    const alien = () => screen.getByTestId('alien-captain')
+    expect(alien()).toHaveTextContent('ヒトよ、この宙域は我らのものだ')
+
+    fireEvent.click(enemyCell('A10'))
+    expect(alien()).toHaveTextContent('どこに潜んでいる')
+    await aiTurn()
+    fireEvent.click(enemyCell('A5'))
+    await aiTurn()
+    fireEvent.click(enemyCell('B5'))
+    await aiTurn()
+    expect(alien()).not.toHaveTextContent('どこに潜んでいる')
+    expect(screen.getByText(/斥候虫を撃沈!!/)).toBeInTheDocument()
+  })
+
   it('ignores clicks on already-shot cells and during the AI turn', async () => {
     render(<BattleScreen playerFleet={rowFleet} aiFleet={rowFleet} difficulty="easy" onFinish={() => {}} aiDelayMs={0} />)
     fireEvent.click(enemyCell('A10'))
@@ -72,11 +88,6 @@ describe('BattleScreen', () => {
     fireEvent.click(enemyCell('B5'))
     expect(screen.getByText(/斥候虫を撃沈!!/)).toBeInTheDocument()
     expect(enemyCell('A5')).toHaveAccessibleName(/sunk$/)
-    expect(screen.getByRole('alert')).toHaveTextContent('エイリアンの斥候虫を撃沈!')
-    await act(async () => {
-      await vi.advanceTimersByTimeAsync(2000)
-    })
-    expect(screen.queryByRole('alert')).not.toBeInTheDocument()
 
     // Sink the rest. Each player shot is followed by one (random) AI shot on a 17-cell fleet,
     // so the AI cannot win before we finish 15 more hits.
@@ -92,7 +103,9 @@ describe('BattleScreen', () => {
       }
     }
     expect(screen.getByRole('status')).toHaveTextContent('勝利')
-    expect(screen.getByRole('dialog', { name: '勝利!' })).toBeInTheDocument()
+    const dialog = screen.getByRole('dialog', { name: '勝利!' })
+    expect(dialog).toHaveTextContent('勝ったぞ! 太陽系は守られた!')
+    expect(dialog).toHaveTextContent('ありえん')
     fireEvent.click(screen.getByRole('button', { name: '結果へ' }))
     expect(onFinish).toHaveBeenCalledWith('player')
   })

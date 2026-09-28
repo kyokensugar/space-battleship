@@ -54,7 +54,7 @@ PR を開くと `.github/workflows/preview.yml` が `https://kyokensugar.github.
 
 ## 画像・音楽・効果音
 
-- オープニング画像(`public/images/opening.webp`)と艦長の顔アイコン3種(`public/images/captain-*.png`)は Takahide Sato 提供のオリジナル。
+- オープニング画像(`public/images/opening.webp`)と艦長・エイリアン司令の顔アイコン各3種(`public/images/captain-*.png`, `alien-*.png`)は Takahide Sato 提供のオリジナル。
 
 - BGM(`public/music/`)は Takahide Sato によるオリジナル楽曲です。
   - `opening.mp3`: "Beyond the Event Horizon"(オープニング/配置/結果画面)

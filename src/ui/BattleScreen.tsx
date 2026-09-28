@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, type CSSProperties } from 'react'
 import type { Difficulty } from '../game/ai/index'
 import { AI_STRATEGIES } from '../game/ai/strategies'
 import { coordKey } from '../game/board'
@@ -19,10 +19,7 @@ type Props = {
   difficulty: Difficulty
   onFinish: (winner: Player) => void
   aiDelayMs?: number
-  bannerMs?: number
 }
-
-type Banner = { who: Player; ship: ShipKind; id: number }
 
 /** Full-screen finale shown once a fleet is destroyed. Stars drift for a win, a red alert pulses for a loss. */
 function ResultOverlay({ winner, onContinue }: { winner: Player; onContinue: () => void }) {
@@ -39,7 +36,10 @@ function ResultOverlay({ winner, onContinue }: { winner: Player; onContinue: () 
       )}
       <div className="result-card">
         <h2 id="result-title">{won ? t.result.win : t.result.lose}</h2>
-        <p>{won ? t.battle.win : t.battle.lose}</p>
+        <div className="result-commanders">
+          <Captain mood={won ? 'happy' : 'sad'} line={won ? t.captain.win : t.captain.lose} />
+          <Captain speaker="alien" mood={won ? 'sad' : 'happy'} line={won ? t.alienCaptain.lose : t.alienCaptain.win} />
+        </div>
         <button type="button" className="primary" onClick={onContinue}>
           {t.battle.toResult}
         </button>
@@ -64,6 +64,24 @@ function captainSpeech(t: Messages, state: GameState, last: LogEntry | undefined
   if (last.outcome === 'sunk') return { mood: 'sad', line: t.captain.enemySunk(shipName(t, 'player', last.sunkShip ?? 'scout')) }
   if (last.outcome === 'hit') return { mood: 'sad', line: t.captain.enemyHit }
   return { mood: 'normal', line: t.captain.enemyMiss }
+}
+
+/** The alien commander's reaction to the same event, from the other side. */
+function alienSpeech(t: Messages, state: GameState, last: LogEntry | undefined): { mood: Mood; line: string } {
+  const a = t.alienCaptain
+  if (state.phase === 'finished') {
+    return state.winner === 'ai' ? { mood: 'happy', line: a.win } : { mood: 'sad', line: a.lose }
+  }
+  if (!last) return { mood: 'normal', line: a.open }
+  if (state.currentTurn === 'ai') return { mood: 'normal', line: a.thinking }
+  if (last.who === 'player') {
+    if (last.outcome === 'sunk') return { mood: 'sad', line: a.playerSunk(shipName(t, 'ai', last.sunkShip ?? 'scout')) }
+    if (last.outcome === 'hit') return { mood: 'sad', line: a.playerHit }
+    return { mood: 'happy', line: a.playerMiss }
+  }
+  if (last.outcome === 'sunk') return { mood: 'happy', line: a.enemySunk(shipName(t, 'player', last.sunkShip ?? 'scout')) }
+  if (last.outcome === 'hit') return { mood: 'happy', line: a.enemyHit }
+  return { mood: 'normal', line: a.enemyMiss }
 }
 
 /** Ships owned by the AI are aliens; `owner` is the side the ship belongs to. */
@@ -113,10 +131,9 @@ function FleetStatus({ side, owner, title }: { side: Side; owner: Player; title:
   )
 }
 
-export function BattleScreen({ playerFleet, aiFleet, difficulty, onFinish, aiDelayMs = 700, bannerMs = 1800 }: Props) {
+export function BattleScreen({ playerFleet, aiFleet, difficulty, onFinish, aiDelayMs = 2200}: Props) {
   const [state, setState] = useState<GameState>(() => startBattle(playerFleet, aiFleet))
   const [log, setLog] = useState<LogEntry[]>([])
-  const [banner, setBanner] = useState<Banner | null>(null)
   const [shake, setShake] = useState(false)
   const { t } = useI18n()
   const { play } = useSound()
@@ -138,9 +155,6 @@ export function BattleScreen({ playerFleet, aiFleet, difficulty, onFinish, aiDel
     if (result.state.phase === 'finished') sfx(result.state.winner === 'player' ? 'win' : 'lose')
     setLog((prev) => [{ who: from.currentTurn, target, outcome: result.outcome, sunkShip: result.sunkShip }, ...prev])
     if (result.outcome !== 'miss') setShake(true)
-    if (result.outcome === 'sunk' && result.sunkShip) {
-      setBanner({ who: from.currentTurn, ship: result.sunkShip, id: result.state.turnCount })
-    }
   }
 
   useEffect(() => {
@@ -148,12 +162,6 @@ export function BattleScreen({ playerFleet, aiFleet, difficulty, onFinish, aiDel
     const timer = setTimeout(() => setShake(false), 400)
     return () => clearTimeout(timer)
   }, [shake])
-
-  useEffect(() => {
-    if (!banner) return
-    const timer = setTimeout(() => setBanner(null), bannerMs)
-    return () => clearTimeout(timer)
-  }, [banner, bannerMs])
 
   useEffect(() => {
     if (state.phase !== 'battle' || state.currentTurn !== 'ai') return
@@ -175,23 +183,18 @@ export function BattleScreen({ playerFleet, aiFleet, difficulty, onFinish, aiDel
       : t.battle.aiTurn
 
   const speech = captainSpeech(t, state, log[0])
+  const alien = alienSpeech(t, state, log[0])
+  const aiThinking = state.phase === 'battle' && state.currentTurn === 'ai'
 
   return (
     <section className={`battle ${shake ? 'shake' : ''}`}>
       <h2>{t.battle.heading}</h2>
-      <Captain mood={speech.mood} line={speech.line} lineKey={log.length} />
-      {banner && (
-        <div key={banner.id} className={`sunk-banner ${banner.who === 'player' ? 'enemy-down' : 'own-down'}`} role="alert">
-          {banner.who === 'player'
-            ? t.battle.sunkEnemy(shipName(t, 'ai', banner.ship))
-            : t.battle.sunkOwn(shipName(t, 'player', banner.ship))}
-        </div>
-      )}
       <p className={`status ${finished ? (state.winner === 'player' ? 'win' : 'lose') : ''}`} role="status">
         {status}
       </p>
       <div className="battle-body">
         <div className="board-block alien">
+          <Captain mood={speech.mood} line={speech.line} lineKey={log.length} />
           <Grid
             label={t.battle.enemySector}
             cellState={sideCellState(state.ai, false)}
@@ -201,7 +204,13 @@ export function BattleScreen({ playerFleet, aiFleet, difficulty, onFinish, aiDel
           <FleetStatus side={state.ai} owner="ai" title={t.battle.enemyFleet} />
         </div>
         <div className="board-block">
-          <Grid label={t.placement.ownSector} cellState={sideCellState(state.player, true)} disabled />
+          <Captain speaker="alien" mood={alien.mood} line={alien.line} lineKey={`${log.length}-${state.currentTurn}`} />
+          <div className="board-wrap">
+            <Grid label={t.placement.ownSector} cellState={sideCellState(state.player, true)} disabled />
+            {aiThinking && aiDelayMs > 0 && (
+              <div className="scan-reticle" aria-hidden="true" style={{ '--scan-ms': `${aiDelayMs}ms` } as CSSProperties} />
+            )}
+          </div>
           <FleetStatus side={state.player} owner="player" title={t.battle.ownFleet} />
         </div>
         <aside className="battle-log">

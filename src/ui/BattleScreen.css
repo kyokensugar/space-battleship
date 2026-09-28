@@ -40,6 +40,14 @@
   gap: 8px;
 }
 
+.board-block .captain {
+  margin: 0;
+  width: 100%;
+  max-width: none;
+  min-height: 92px;
+  align-items: flex-start;
+}
+
 .fleet-status h3,
 .battle-log h3 {
   margin: 0 0 6px;
@@ -91,6 +99,75 @@
   color: var(--text-h);
 }
 
+/* Alien targeting: a reticle sweeps over our sector while it "thinks" */
+.board-wrap {
+  position: relative;
+}
+
+.scan-reticle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 34px;
+  height: 34px;
+  pointer-events: none;
+  border: 2px solid #7ef5b0;
+  border-radius: 50%;
+  box-shadow:
+    0 0 12px rgba(126, 245, 176, 0.8),
+    inset 0 0 8px rgba(126, 245, 176, 0.5);
+  animation: scan var(--scan-ms, 2200ms) ease-in-out forwards;
+}
+
+.scan-reticle::before,
+.scan-reticle::after {
+  content: '';
+  position: absolute;
+  background: #7ef5b0;
+}
+
+.scan-reticle::before {
+  left: 50%;
+  top: -6px;
+  bottom: -6px;
+  width: 2px;
+  transform: translateX(-50%);
+}
+
+.scan-reticle::after {
+  top: 50%;
+  left: -6px;
+  right: -6px;
+  height: 2px;
+  transform: translateY(-50%);
+}
+
+@keyframes scan {
+  0% {
+    opacity: 0;
+    transform: translate(60px, 60px);
+  }
+  10% {
+    opacity: 1;
+  }
+  30% {
+    transform: translate(300px, 120px);
+  }
+  55% {
+    transform: translate(120px, 320px);
+  }
+  80% {
+    transform: translate(280px, 260px);
+  }
+  95% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(200px, 200px);
+  }
+}
+
 /* Screen shake on hit/sunk */
 .battle.shake {
   animation: shake 0.4s ease-out;
@@ -115,52 +192,6 @@
   }
 }
 
-/* Sunk banner fades in place (no motion, so it does not fight the screen shake) */
-.sunk-banner {
-  position: fixed;
-  top: 18%;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 10;
-  padding: 14px 32px;
-  border-radius: 12px;
-  font-size: 1.5rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  color: var(--text-h);
-  background: rgba(5, 8, 22, 0.85);
-  border: 1px solid var(--border);
-  backdrop-filter: blur(8px);
-  pointer-events: none;
-  animation: banner 1.8s ease-out forwards;
-}
-
-.sunk-banner.enemy-down {
-  border-color: var(--hit);
-  box-shadow: 0 0 30px rgba(249, 115, 22, 0.6);
-  text-shadow: 0 0 16px rgba(249, 115, 22, 0.9);
-}
-
-.sunk-banner.own-down {
-  border-color: var(--sunk);
-  box-shadow: 0 0 30px rgba(220, 38, 38, 0.6);
-  text-shadow: 0 0 16px rgba(220, 38, 38, 0.9);
-}
-
-@keyframes banner {
-  0% {
-    opacity: 0;
-  }
-  10% {
-    opacity: 1;
-  }
-  80% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-  }
-}
 
 /* Full-screen result overlay */
 .result-overlay {
@@ -204,7 +235,8 @@
 
 .result-card {
   text-align: center;
-  padding: 32px 48px;
+  padding: 32px 40px;
+  width: min(640px, 92vw);
   border-radius: 16px;
   background: var(--panel);
   border: 1px solid var(--border);
@@ -226,6 +258,18 @@
 .result-overlay.lose .result-card h2 {
   color: #ff7b7b;
   text-shadow: 0 0 30px rgba(255, 123, 123, 0.8);
+}
+
+.result-commanders {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 16px 0 20px;
+  text-align: left;
+}
+
+.result-commanders .captain {
+  margin: 0;
 }
 
 @keyframes card-in {
