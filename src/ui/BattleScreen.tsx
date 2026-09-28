@@ -9,6 +9,7 @@ import { coordLabel } from './coordLabel'
 import { Grid, type CellState } from './Grid'
 import { useI18n } from '../i18n/context'
 import { useSound } from '../audio/context'
+import { Captain, type Mood } from './Captain'
 import type { Messages } from '../i18n/messages'
 import './BattleScreen.css'
 
@@ -48,6 +49,22 @@ function ResultOverlay({ winner, onContinue }: { winner: Player; onContinue: () 
 }
 
 type LogEntry = { who: Player; target: Coord; outcome: ShotOutcome; sunkShip?: ShipKind }
+
+/** What the captain reacts to; stored as data and translated at render time. */
+function captainSpeech(t: Messages, state: GameState, last: LogEntry | undefined): { mood: Mood; line: string } {
+  if (state.phase === 'finished') {
+    return state.winner === 'player' ? { mood: 'happy', line: t.captain.win } : { mood: 'sad', line: t.captain.lose }
+  }
+  if (!last) return { mood: 'normal', line: t.captain.aim }
+  if (last.who === 'player') {
+    if (last.outcome === 'sunk') return { mood: 'happy', line: t.captain.playerSunk(shipName(t, 'ai', last.sunkShip ?? 'scout')) }
+    if (last.outcome === 'hit') return { mood: 'happy', line: t.captain.playerHit }
+    return { mood: 'normal', line: t.captain.playerMiss }
+  }
+  if (last.outcome === 'sunk') return { mood: 'sad', line: t.captain.enemySunk(shipName(t, 'player', last.sunkShip ?? 'scout')) }
+  if (last.outcome === 'hit') return { mood: 'sad', line: t.captain.enemyHit }
+  return { mood: 'normal', line: t.captain.enemyMiss }
+}
 
 /** Ships owned by the AI are aliens; `owner` is the side the ship belongs to. */
 function shipName(t: Messages, owner: Player, kind: ShipKind) {
@@ -157,9 +174,12 @@ export function BattleScreen({ playerFleet, aiFleet, difficulty, onFinish, aiDel
       ? t.battle.yourTurn
       : t.battle.aiTurn
 
+  const speech = captainSpeech(t, state, log[0])
+
   return (
     <section className={`battle ${shake ? 'shake' : ''}`}>
       <h2>{t.battle.heading}</h2>
+      <Captain mood={speech.mood} line={speech.line} lineKey={log.length} />
       {banner && (
         <div key={banner.id} className={`sunk-banner ${banner.who === 'player' ? 'enemy-down' : 'own-down'}`} role="alert">
           {banner.who === 'player'
