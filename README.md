@@ -52,7 +52,9 @@ PR を開くと `.github/workflows/preview.yml` が `https://kyokensugar.github.
 - `docs/requirements.md` — 要件定義書
 - `docs/design.md` — 設計書
 
-## 音楽・効果音
+## 画像・音楽・効果音
+
+- オープニング画像(`public/images/opening.webp`)は Takahide Sato 提供のオリジナル(1800×595, WebP に変換)。
 
 - BGM(`public/music/`)は Takahide Sato によるオリジナル楽曲です。
   - `opening.mp3`: "Beyond the Event Horizon"(オープニング/配置/結果画面)
