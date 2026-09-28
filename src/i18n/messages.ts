@@ -43,6 +43,7 @@ export type Messages = {
     sunk: (ship: string) => string
     toResult: string
   }
+  sound: { mute: string; unmute: string }
   result: {
     win: string
     lose: string
@@ -93,6 +94,7 @@ const ja: Messages = {
     sunk: (ship) => `${ship}を撃沈!!`,
     toResult: '結果へ',
   },
+  sound: { mute: '音を消す', unmute: '音を出す' },
   result: {
     win: '勝利!',
     lose: '敗北…',
@@ -143,6 +145,7 @@ const en: Messages = {
     sunk: (ship) => `${ship} sunk!!`,
     toResult: 'Results',
   },
+  sound: { mute: 'Mute sound', unmute: 'Unmute sound' },
   result: {
     win: 'Victory!',
     lose: 'Defeat…',

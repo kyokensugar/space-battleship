@@ -8,6 +8,8 @@ import { PlacementScreen } from './ui/PlacementScreen'
 import { Starfield } from './ui/Starfield'
 import { useI18n } from './i18n/context'
 import { LanguageSwitch } from './i18n/LanguageSwitch'
+import { MuteButton } from './audio/MuteButton'
+import { Music } from './audio/Music'
 import './App.css'
 
 type Screen =
@@ -24,9 +26,13 @@ function App() {
   return (
     <main>
       <Starfield />
+      <Music track={screen.name === 'battle' ? 'battle' : 'opening'} />
       <header className="app-header">
         <h1>{t.title}</h1>
-        <LanguageSwitch />
+        <div className="header-controls">
+          <LanguageSwitch />
+          <MuteButton />
+        </div>
       </header>
       {screen.name === 'start' && (
         <section className="start">

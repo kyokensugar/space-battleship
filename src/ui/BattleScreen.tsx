@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { Difficulty } from '../game/ai/index'
 import { AI_STRATEGIES } from '../game/ai/strategies'
 import { coordKey } from '../game/board'
@@ -8,6 +8,7 @@ import type { Coord, Fleet, ShipKind } from '../game/types'
 import { coordLabel } from './coordLabel'
 import { Grid, type CellState } from './Grid'
 import { useI18n } from '../i18n/context'
+import { useSound } from '../audio/context'
 import type { Messages } from '../i18n/messages'
 import './BattleScreen.css'
 
@@ -67,6 +68,11 @@ export function BattleScreen({ playerFleet, aiFleet, difficulty, onFinish, aiDel
   const [state, setState] = useState<GameState>(() => startBattle(playerFleet, aiFleet))
   const [log, setLog] = useState<LogEntry[]>([])
   const { t } = useI18n()
+  const { play } = useSound()
+  const playRef = useRef(play)
+  useEffect(() => {
+    playRef.current = play
+  }, [play])
 
   const finished = state.phase === 'finished'
   const winner = state.winner
@@ -75,6 +81,10 @@ export function BattleScreen({ playerFleet, aiFleet, difficulty, onFinish, aiDel
   const fire = (from: GameState, target: Coord) => {
     const result = takeTurn(from, target)
     setState(result.state)
+    const sfx = playRef.current
+    if (from.currentTurn === 'player') sfx('fire')
+    sfx(result.outcome)
+    if (result.state.phase === 'finished') sfx(result.state.winner === 'player' ? 'win' : 'lose')
     setLog((prev) => [{ who: from.currentTurn, target, outcome: result.outcome, sunkShip: result.sunkShip }, ...prev])
   }
 
